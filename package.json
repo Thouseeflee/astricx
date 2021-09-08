@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Thouseeflee/astricx#readme",
   "dependencies": {
+    "bootstrap": "^5.1.1",
     "cloudinary": "^1.25.1",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^4.4.1",
