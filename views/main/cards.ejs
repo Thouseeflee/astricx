@@ -1,0 +1,26 @@
+<%- layout('layout/boilerplate') %> 
+        <div class="row">
+        <div class="col-md-6 offset-md-3">
+
+        <form action="/<%=Title._id%>/createCard" method="POST">
+
+            <h1 class="text-center mb-5">Create a New Card in <%=Title.title%> </h1>
+            <div class="row mb-3">
+                <label for="name" class="col-sm-2 col-form-label">Name</label>
+                <div class="col-sm-10">
+                  <input type="text" name="name" class="form-control" id="name">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label for="about" class="col-sm-2 col-form-label">About</label>
+                <div class="col-sm-10">
+                   <textarea class="form-control" name="about" id="" cols="30" rows="10"></textarea>
+            <button type="submit">Create Post</button>
+
+                </div>
+
+            </div>
+
+        </form>
+    </div>

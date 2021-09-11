@@ -5,11 +5,11 @@ const title =require('./title')
 const cardSchema =new Schema({
     name:{
         type:String,
-        required:true
+        required: true
     },
     about:{
         type:String,
-        required:true
+        required: true
     }
 })
 
