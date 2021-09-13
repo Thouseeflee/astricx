@@ -10,6 +10,10 @@ const cardSchema =new Schema({
     about:{
         type:String,
         required: true
+    },
+    title:{
+        type: Schema.Types.ObjectId,
+        ref: 'Title',
     }
 })
 
