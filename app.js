@@ -11,8 +11,7 @@ const flash = require('connect-flash');
 const multer = require('multer');
 const morgan = require('morgan')
 const title =require('./models/title');
-const card = require('./models/cards')
-const { read } = require('fs');
+const card = require('./models/cards');
 
 
 
@@ -36,8 +35,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'))
 app.use(morgan('tiny'))
 
-app.get('/', (req, res) => {
-    res.render('index')
+app.get('/', async(req, res) => {
+    const Title = await title.find({})
+    res.render('index',{Title})
+})
+app.get('/:id/show', async(req,res) => {
+    const {id} = req.params;
+    const Title = await title.findById(id);
+    const Cards = await card.find({title : id});
+    console.log(Cards);
+    res.render('show',{Title, Cards})
 })
 app.get('/new', (req,res )=> {
     res.render('main/title')
@@ -45,19 +52,21 @@ app.get('/new', (req,res )=> {
 app.post('/createTitle', async(req,res) => {
    const Title = new title(req.body)
    await Title.save();
-   res.render('main/cards',{Title})
+   res.redirect(`/${Title._id}/newCard`)
 })
-app.get('/newCard', (req,res )=> {
-    res.render('main/cards')
+app.get('/:id/newCard', async(req,res )=> {
+    const {id} = req.params;
+    const fTitle = await title.findById(id);
+    console.log(fTitle);
+    res.render('main/cards',{fTitle})
 })
 app.post('/:id/createCard', async(req,res) => {
     const {id} = req.params;
     const Title = await title.findById(id);
     const newCard = new card(req.body);
-    Title.cards.push(newCard);
-    await Title.save()
+    newCard.title = Title._id;
     await newCard.save()
-    res.send('created a post successfully')
+    res.redirect(`/${Title._id}/show`)
 })
 
 app.get('*', (req,res) => {

@@ -1,11 +1,22 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home page</title>
-</head>
-<body>
-    <h1>Hello this is an home page</h1>
-</body>
-</html>
+<%- layout('/layout/boilerplate') %> 
+
+<div class="container-fluid">
+    <h1 class="text-center">Astrics - <small>The most Liked</small></h1>
+    <% for(let head of Title) {%> 
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card text-center" style="width: 16rem;">
+                <div class="card-body">
+                  <h5 class="card-title"><%= head.title %> </h5>
+                  <!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
+                  <a href="/<%=head._id%>/show "  class="btn btn-primary mt-2">Open</a>
+                </div>
+              </div>
+
+            
+        </div>
+    </div>
+    <% } %> 
+
+</div>
