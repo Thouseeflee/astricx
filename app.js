@@ -166,8 +166,7 @@ app.get('/:id/show/:cardId/likes',ifLogged, async(req,res) => {
     const Like = await like.findOne({card: cardId})
     const Cards = await card.findById(cardId);
     const user = req.user._id;
-    console.log(Cards);
-    if(!Like){
+    if(!Cards.likes.includes(user)){
     Likes.creator = user;
     Likes.title = id;
     Likes.card = cardId;
@@ -177,7 +176,7 @@ app.get('/:id/show/:cardId/likes',ifLogged, async(req,res) => {
     res.send({
         totalLikes: Cards.likes.length
     });
-    res.redirect(`/${id}/show`)
+    // res.redirect(`/${id}/show`)
     } else {
         await Like.remove();
         let idx = Cards.likes.indexOf(user);
@@ -186,9 +185,9 @@ app.get('/:id/show/:cardId/likes',ifLogged, async(req,res) => {
         res.send({
             totalLikes: Cards.likes.length
         })
-        res.redirect(`/${id}/show`)
-
+        
     }
+    // res.redirect(`/${id}/show`)
 })
 
 app.get('*', (req,res) => {
