@@ -1,15 +1,17 @@
 <%- layout('/layout/boilerplate') %> 
 
+<div class="container-fluid">
 
 <h1 class="text-center"><%= Title.title %></h1>
-<div class="container-fluid">
+<a class="btn btn-success" href="/<%= Title._id %>/newCard ">Create New Card</a>
 
     
 
-     <% for (let card of Cards) {%> 
- <div class="row mt-3">
-     <div class="col">
-        <div class="card" style="width: 18rem;">
+  <div class="row">
+    <% for (let card of Cards) {%> 
+    <div class="col-6 col-md-3">
+        <div class="card mt-3">
+          <img src="<%= card.image.url%> " class="card-img-top" alt="...">
             <div class="card-body">
               <h5 class="card-title"><%= card.name %> </h5>
               <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
@@ -17,10 +19,75 @@
               <!-- <a href="#" class="card-link">Card link</a> -->
               <!-- <a href="#" class="card-link">Another link</a> -->
             </div>
+            <form class="card-footer d-grid gap-2" action="/<%=Title._id%>/show/<%=card._id%>/likes" method="GET">
+              <%# for (let lakes of Like){ %>
+              
+              <% if(currentUser) {%>  
+
+                
+                  <% if(card.likes.some(function (like) {return like.equals(currentUser._id)})) {%> 
+                  <button data=<%=card._id%> data-1=<%=Title._id%> class="btn btn-success btn-fill button">Liked</button>
+                  <span class="nLikes text-center"><%= card.likes.length %> </span>
+                   <% } else { %> 
+                    <button data=<%=card._id%> data-1=<%=Title._id%> class="btn btn-secondary btn-fill button">Like</button>
+                  <span class="nLikes text-center"><%= card.likes.length %> </span>
+                    <% } %> 
+                             
+                  <% } %>
+                
+                <%# } %> 
+
+
+            </form>
           </div>
         </div>
-    </div>              
         <% } %> 
+        <p>
+          <%# for(let lakes of Like){ %>
+                
+            <%# if(lakes.creator === currentUser._id) {%> 
+            <!-- <button data=<%#card._id%> data-1=<%#Title._id%> class="btn btn-success btn-fill button">Liked</button> -->
+             <%# } %> 
+                       
+            <%# } %>
+        </p>
+    </div>              
 
 
 </div>
+
+<script>
+
+const btns =document.querySelectorAll('.button')
+
+// const likes = document.querySelector('.nLikes');
+
+
+for(let btn of btns){
+  
+
+   btn.addEventListener('click', function(e){
+     e.preventDefault();
+    //  const likeCounterSpan = this.previousElementSibling.children[0];
+    //  console.log(this.previousElemenSibling)
+     if(this.textContent === "Like"){
+       this.textContent = "Liked"
+       this.classList ="btn btn-success"
+     }else if(this.textContent ==="Liked"){
+       this.textContent = "Like";
+       this.classList = "btn btn-secondary"
+     }
+
+     const card_id = this.getAttribute("data")
+     const title_id = this.getAttribute("data-1")
+     axios.get(`/${title_id}/show/${card_id}/likes`)
+     .then(function(res) {
+       console.log("hurray working");
+      //  likes.innerText = res.data.totalLikes;
+     })
+     .catch(function (e) {
+       console.log(e);
+     })
+   })
+  }
+</script>

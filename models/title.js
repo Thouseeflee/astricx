@@ -6,6 +6,10 @@ const titleSchema =new Schema({
     title:{
         type:String,
         required:true,
+    },
+    creator:{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
     }
 })
 
