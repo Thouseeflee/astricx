@@ -1,15 +1,20 @@
 <%- layout('/layout/boilerplate') %> 
 
+  <% let hash = 0; %> 
+
 <div class="container-fluid">
-    <h1 class="text-center">Astrics - <small>The most Liked</small></h1>
-    <a class="btn btn-success" href="/createTitle">Create New Title</a>
+    <!-- <h1 class="text-center"><small>The most Lik</small></h1> -->
+    <div class="d-grid gap-2 d-md-flex justify-content-md-center sticky-top">
+      <a class="btn btn-success" href="/createTitle">Create New Title</a>
+    </div>
     
     <div class="row">
         <% for(let head of Title) {%>
+          <% hash++; %> 
         <div class="col-6 col-md-3">
             <div class="card text-center mt-4">
                 <div class="card-body">
-                  <h5 class="card-title"><%= head.title %> </h5>
+                  <h5 class="card-title"><span class="hash" data=<%= hash %> >#<%= hash %></span> <%= head.title %> </h5>
                   <!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
                   <a href="/<%=head._id%>/show "  class="btn btn-primary mt-2">Open</a>
                 </div>
@@ -19,3 +24,20 @@
     </div>
         
 </div>
+
+<script>
+  const hash =document.querySelectorAll('.hash')
+
+  for(let has of hash){
+    const hashData = has.getAttribute("data");
+      if(hashData <= 3){
+        has.classList = 'text-danger'
+      }
+      console.log(has.innerText);
+    }
+
+
+  // hash.addEventListener('click', function() {
+  //   alert("hello")
+  // })
+</script>

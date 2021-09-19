@@ -1,19 +1,21 @@
 <%- layout('/layout/boilerplate') %> 
-
+<% let hash = 0; %> 
 <div class="container-fluid">
 
 <h1 class="text-center"><%= Title.title %></h1>
+<div class="d-grid gap-2 d-md-flex justify-content-md-center fixed-bottom">
 <a class="btn btn-success" href="/<%= Title._id %>/newCard ">Create New Card</a>
-
+</div>
     
 
   <div class="row">
     <% for (let card of Cards) {%> 
+      <% hash++; %> 
     <div class="col-6 col-md-3">
         <div class="card mt-3">
           <img src="<%= card.image.url%> " class="card-img-top" alt="...">
             <div class="card-body">
-              <h5 class="card-title"><%= card.name %> </h5>
+              <h5 class="card-title"> <span class="hash" data=<%= hash %> >#<%= hash %></span> <%= card.name %> </h5>
               <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
               <p class="card-text"><%= card.about %> </p>
               <!-- <a href="#" class="card-link">Card link</a> -->
@@ -61,7 +63,20 @@
 const btns =document.querySelectorAll('.button')
 
 // const likes = document.querySelector('.nLikes');
+  const hash =document.querySelectorAll('.hash')
 
+  for(let has of hash){
+    const hashData = has.getAttribute("data");
+      if(hashData <= 3){
+        has.classList = 'text-danger'
+      }
+      console.log(has.innerText);
+    }
+
+
+  // hash.addEventListener('click', function() {
+  //   alert("hello")
+  // })
 
 for(let btn of btns){
   
