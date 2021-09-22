@@ -16,8 +16,21 @@
                 <div class="card-body">
                   <h5 class="card-title"><span class="hash" data=<%= hash %> >#<%= hash %></span> <%= head.title %> </h5>
                   <!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
-                  <a href="/<%=head._id%>/show "  class="btn btn-primary mt-2">Open</a>
+                  <%# for(let card of Cards) {%> 
+                    <%# console.log(card); %> 
+                    <!-- <span><img src="<%#= card.image.url %> " width="50px" alt="img"></span> -->
+                <%#  } %> 
+                    
+                  <div>
+                  <a href="/<%=head._id%>/show "  class="stretched-link mt-2"></a>
+                  </div>
+
                 </div>
+
+                
+              </div>
+              <div class="card-footer text-end">
+                <a href="/<%= head.creator %>">@<%= head.creator %> </a>
               </div>
         </div>
         <% } %> 

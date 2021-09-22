@@ -88,7 +88,18 @@ next()
 
 app.get('/', async(req, res) => {
     const Title = await title.find({})
-    res.render('index',{Title})
+    const titleId = () => {
+        for(let h of Title){
+        var loop = h._id
+        return loop;
+        }
+    }
+    const titleI =titleId()
+    console.log(titleI);
+    // const thumbTitle = await title.findById(id);
+    const Cards = await card.find({title : titleI});
+    // console.log(Cards);
+    res.render('index',{Title,Cards})
 })
 app.get('/register', (req,res) =>{
     res.render('user/register')
@@ -127,9 +138,22 @@ app.get('/createTitle',ifLogged, (req,res )=> {
 })
 app.post('/createTitle', ifLogged, async(req,res) => {
     const Title = new title(req.body)
-    Title.creator = req.user._id
+    Title.creator = req.user.username;
     await Title.save();
     res.redirect(`/${Title._id}/newCard`)
+})
+app.get('/:profile',ifLogged, async(req,res,next) => {
+    const {profile} = req.params;
+    const userId =req.user._id;
+    const user = await User.find({username: profile})
+    const Title = await title.find({creator:profile})
+    const allTitle = await title.find({});
+    const Cards = await card.find({creator:profile}).populate('title')
+    if(user.length){
+        res.render('user/profile',{user,Cards,Title,allTitle})
+    }else{
+        next();
+    }
 })
 app.get('/:id/newCard',ifLogged, async(req,res )=> {
     const {id} = req.params;
@@ -143,7 +167,7 @@ app.post('/:id/createCard',ifLogged, upload.single('image'),async(req,res) => {
     const newCard = new card(req.body);
     newCard.image = {url:path, filename: filename};
     newCard.title = Title._id;
-    newCard.creator = req.user._id;
+    newCard.creator = req.user.username;
     await newCard.save();
     res.redirect(`/${Title._id}/show`)
 })
@@ -165,7 +189,7 @@ app.get('/:id/show/:cardId/likes',ifLogged, async(req,res) => {
     const Likes = new like({})
     const Like = await like.findOne({card: cardId})
     const Cards = await card.findById(cardId);
-    const user = req.user._id;
+    const user = req.user.username;
     if(!Cards.likes.includes(user)){
     Likes.creator = user;
     Likes.title = id;
@@ -188,6 +212,13 @@ app.get('/:id/show/:cardId/likes',ifLogged, async(req,res) => {
         
     }
     // res.redirect(`/${id}/show`)
+})
+
+app.delete('/:cardId', async(req,res) =>{
+    const {cardId} = req.params;
+    const username = req.user.username;
+    const deleteCard = await card.findByIdAndDelete(cardId) 
+    res.redirect(`/${username}`)
 })
 
 app.get('*', (req,res) => {

@@ -1,6 +1,8 @@
 const mongoose =require('mongoose');
 const Schema=mongoose.Schema;
-const title =require('./title')
+const title =require('./title');
+const liked =require('./likes');
+const { date } = require('joi');
 
 const imageSchema = new Schema({
     filename: String,
@@ -26,15 +28,26 @@ const cardSchema =new Schema({
     },
     image:imageSchema,
     creator:{ 
-       type: Schema.Types.ObjectId,
-       ref: 'User'
+       type: String,
+       required: true,
     },
     likes:[
         {
-            type: Schema.Types.ObjectId,
-            ref: 'Like'
+            type: String,
+            required: true
         }
-    ]
+    ],
+})
+
+cardSchema.set('timestamps', true);
+
+cardSchema.post('findOneAndDelete', async function (doc) {
+    if (doc) {
+        await liked.deleteMany({ card: { $in: doc._id } })
+        console.log(doc);
+        console.log(liked);
+        // console.log(liked._id);
+    }
 })
 
 module.exports = mongoose.model('Card',cardSchema)

@@ -3,8 +3,8 @@ const Schema=mongoose.Schema;
 
 const likesSchema =new Schema({
     creator:{
-        type: Schema.Types.ObjectId,
-        ref: 'User'
+        type: String,
+        required: true
     },
     title:{
         type: Schema.Types.ObjectId,

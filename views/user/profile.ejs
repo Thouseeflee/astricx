@@ -1,0 +1,140 @@
+<% layout('./layout/boilerplate') %> 
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+<div class="container-fluid">
+
+    <% for(let u of user) {%> 
+        <h1 class="text-center"> <%#u.username.toUpperCase()%> </h1>
+        <% } %> 
+        <div class="row">
+            <% for (let card of Cards) {%> 
+                <div class="col-md-4 offset-md-4">
+                  <%# for (let head of Cards) {%> 
+                    <h2 class="text-center"><a href="/<%=card.title._id%>/show"><%= card.title.title %></a> </h2>
+                     <%# } %> 
+                    <div class="card mt-3">
+                        <img src="<%= card.image.url%> " class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= card.name %> </h5>
+                            <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
+                            <p class="card-text"><%= card.about %> </p>
+              <!-- <a href="#" class="card-link">Card link</a> -->
+              <!-- <a href="#" class="card-link">Another link</a> -->
+                        </div>
+            <form class="mb-2 ms-2" action="/<%=Title._id%>/show/<%=card._id%>/likes" method="GET">
+                <%# for (let lakes of Like){ %>
+                    
+                    <% if(currentUser) {%>  
+                        
+                
+                        <% if(card.likes.some(function (like) {return like === currentUser.creator})) {%> 
+                  <i class="btn fas fa-star btn-like button" data=<%=card._id%> data-1=<%=card.title._id%>  data-value="Liked"></i>  
+                            <span class="nLikes text-center"><%= card.likes.length %></span>
+                   <% } else { %> 
+                    <i class="btn far fa-star btn-like button" data=<%=card._id%> data-1=<%=card.title._id%>  data-value="Like"></i>  
+
+                  <span class="nLikes text-center"><%= card.likes.length %></span>
+                    <% } %> 
+                    
+                     
+
+                    <% } %>
+                    
+                    <%# } %> 
+                </form>
+                 <% if(currentUser && card.creator === currentUser.username) {%> 
+                <form class="card-footer text-end" action="/<%=card._id%>?_method=DELETE" method="POST">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+                <% } %> 
+            </div>
+            
+        </div> 
+        <%  } %> 
+     
+        <!-- <div class="col-md-1">
+            <%# for(let title of allTitle) {%> 
+           <h2><a href=""><%#= title.title %> </a></h2>
+           <%# } %> 
+        </div> -->
+      
+
+       
+      
+        <p>
+            <%# for(let lakes of Like){ %>
+                
+                <%# if(lakes.creator === currentUser._id) {%> 
+                    <!-- <button data=<%#card._id%> data-1=<%#Title._id%> class="btn btn-success btn-fill button">Liked</button> -->
+                    <%# } %> 
+                    
+                    <%# } %>
+                </p>
+            </div>  
+            
+
+
+
+        </div>
+
+        <script>
+
+            const btns =document.querySelectorAll('.button')
+            
+            // const likes = document.querySelector('.nLikes');
+            //   const hash =document.querySelectorAll('.hash')
+            
+            //   for(let has of hash){
+            //     const hashData = has.getAttribute("data");
+            //       if(hashData <= 3){
+            //         has.classList = 'text-danger'
+            //       }
+            //       console.log(has.innerText);
+            //     }
+            
+            
+              // hash.addEventListener('click', function() {
+              //   alert("hello")
+              // })
+            
+            for(let btn of btns){
+              
+            
+               btn.addEventListener('click', function(e){
+                 e.preventDefault();
+                 const likeCounterSpan = this.nextElementSibling;
+                //  console.log(this.nextElementSibiling)
+                //  if(this.textContent === "Like"){
+                //    this.textContent = "Liked"
+                //    this.classList ="btn btn-success"
+                //  }else if(this.textContent ==="Liked"){
+                //    this.textContent = "Like";
+                //    this.classList = "btn btn-secondary"
+                //  }
+
+                console.log(this.getAttribute("data-value"));
+           if(this.getAttribute("data-value") === "Liked") {
+           this.setAttribute("data-value", "Like")
+          this.classList = "far fa-star btn-like"
+         }else if(this.getAttribute("data-value") ==="Like") {
+          this.setAttribute("data-value", "Liked")
+          this.classList = "fas fa-star btn-like"
+         }
+
+
+                 const card_id = this.getAttribute("data")
+                 const title_id = this.getAttribute("data-1")
+                 axios.get(`/${title_id}/show/${card_id}/likes`)
+                 .then(function(res) {
+                   console.log("hurray working");
+                   likeCounterSpan.innerText = res.data.totalLikes;
+                 })
+                 .catch(function (e) {
+                   console.log(e);
+                 })
+               })
+              }
+            </script>
+            
