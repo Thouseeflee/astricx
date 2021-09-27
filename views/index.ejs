@@ -1,20 +1,27 @@
 <%- layout('/layout/boilerplate') %> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 
   <% let hash = 0; %> 
 
 <div class="container-fluid">
     <!-- <h1 class="text-center"><small>The most Lik</small></h1> -->
-    <div class="d-grid gap-2 d-md-flex justify-content-md-center sticky-top">
+    <div class="d-grid gap-2 d-md-flex justify-content-md-center fixed-bottom">
       <a class="btn btn-success" href="/createTitle">Create New Title</a>
     </div>
     
+    
+
     <div class="row">
         <% for(let head of Title) {%>
           <% hash++; %> 
-        <div class="col-6 col-md-3">
-            <div class="card text-center mt-4">
+        <div class="col-12 col-md-3">
+            <div class="card text-center mt-1">
                 <div class="card-body">
-                  <h5 class="card-title"><span class="hash" data=<%= hash %> >#<%= hash %></span> <%= head.title %> </h5>
+                  <h5 class="card-title">
+                    <span class="hash" data=<%= hash %> >#<%= hash %></span> 
+                    <%=head.title%> <i class="fas fa-star Liked"> </i>
+                    <span class="title-cL" data-likes=<%=head.totalLikes%> ><%=head.totalLikes%></span></h5>
                   <!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
                   <%# for(let card of Cards) {%> 
                     <%# console.log(card); %> 
@@ -30,7 +37,7 @@
                 
               </div>
               <div class="card-footer text-end">
-                <a href="/<%= head.creator %>">@<%= head.creator %> </a>
+                <a href="/<%= head.creator %>"><%#= head.creator %> <img src="<%= head.creatorProfile.profile%>" alt=""></a>
               </div>
         </div>
         <% } %> 
@@ -40,17 +47,22 @@
 
 <script>
   const hash =document.querySelectorAll('.hash')
-
+  
   for(let has of hash){
     const hashData = has.getAttribute("data");
-      if(hashData <= 3){
-        has.classList = 'text-danger'
-      }
-      console.log(has.innerText);
+    if(hashData <= 3){
+      has.classList = 'text-danger'
     }
-
+  }
+  
+  
 
   // hash.addEventListener('click', function() {
   //   alert("hello")
   // })
+
+ 
+  
+            
 </script>
+

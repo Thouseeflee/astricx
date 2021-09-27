@@ -8,9 +8,18 @@ const imageSchema = new Schema({
     filename: String,
     url: String
 })
+// const profileSchema = new Schema({
+//     filename: String,
+//     url: String
+// })
 
 imageSchema.virtual('thumbnail').get(function () {
-    return this.url.replace('/upload', '/upload/w_100')
+    // return this.url.replace('/upload', '/upload/w_350,h_400,c_fill')
+    // return this.url.replace('/upload', '/upload/c_fill,g_face,h_750,w_700')
+    return this.url.replace('/upload', '/upload/c_fill,g_face,h_1150,w_1000')
+})
+imageSchema.virtual('profile').get(function () {
+    return this.url.replace('/upload', '/upload/c_fill,g_face,h_40,w_40,r_max')
 })
 
 const cardSchema =new Schema({
@@ -31,12 +40,21 @@ const cardSchema =new Schema({
        type: String,
        required: true,
     },
+    creatorProfile:imageSchema,
     likes:[
         {
             type: String,
             required: true
         }
     ],
+    numOfLikes:{
+        type:Number,
+        default: 0
+    },
+    numOfComment:{
+        type:Number,
+        default:0
+    }
 })
 
 cardSchema.set('timestamps', true);

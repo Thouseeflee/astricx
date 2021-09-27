@@ -1,6 +1,58 @@
 .liked {
   color: #f5bd23 !important;
+  font-size: 2rem;
 }
 .unLiked {
   color: #d6d6d6 !important;
+  font-size: 2rem;
+}
+
+.profileLike {
+  color: #f5bd23 !important;
+  font-size: 4rem;
+}
+.count {
+  margin-left: 2rem;
+}
+.likesColumn {
+  /* display: flex; */
+  /* align-items: center; */
+  margin-top: 1.7rem;
+}
+#warning {
+  display: none;
+  color: red;
+}
+.c-user {
+  margin-left: 0.5rem;
+}
+.comment {
+  display: inline-flex;
+}
+.c-font {
+  font-size: 1.5rem;
+}
+.c-button {
+  color: black;
+  background: #7ac74f;
+}
+.title-cL {
+  /* margin-left: 0.5rem; */
+}
+.Liked {
+  color: #f5bd23 !important;
+  font-size: 1.2rem;
+}
+/* .profile-thumb {
+  justify-content: start;
+} */
+.display {
+  /* display: none;
+  transition: opacity 1s ease-out;
+  opacity: 0; */
+
+  transition: opacity 1s ease-out;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
 }

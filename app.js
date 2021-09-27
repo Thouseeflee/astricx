@@ -4,6 +4,7 @@ if (process.env.NODE_ENV !== "production") {
 
 const express =require('express');
 const app = express();
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose')
 const methodOverride = require('method-override')
 const path = require('path')
@@ -20,8 +21,7 @@ const {storage} = require('./cloudinary');
 const upload = multer({storage});
 const User = require('./models/user')
 const like = require('./models/likes');
-const { findOne } = require('./models/cards');
-
+const Comment = require('./models/comment')
 
 
 mongoose.connect('mongodb://localhost:27017/astricx', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
@@ -36,10 +36,10 @@ mongoose.connect('mongodb://localhost:27017/astricx', { useNewUrlParser: true, u
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'))
 app.use(express.static(path.join(__dirname, 'public')))
-
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.engine('ejs', ejsMate)
-app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'))
 app.use(morgan('tiny'))
 
@@ -87,27 +87,19 @@ next()
 
 
 app.get('/', async(req, res) => {
-    const Title = await title.find({})
-    const titleId = () => {
-        for(let h of Title){
-        var loop = h._id
-        return loop;
-        }
-    }
-    const titleI =titleId()
-    console.log(titleI);
-    // const thumbTitle = await title.findById(id);
-    const Cards = await card.find({title : titleI});
-    // console.log(Cards);
-    res.render('index',{Title,Cards})
+    const Title = await title.find({}).sort({totalLikes: -1});
+    res.render('index',{Title})
 })
 app.get('/register', (req,res) =>{
     res.render('user/register')
 })
-app.post('/register', async (req,res) => {
+app.post('/register',upload.single('profile'),async (req,res) => {
     try {
         const { email, username, password } = req.body;
+        console.log(req.file);
+        const {filename, path} = req.file;
         const user = new User({ email, username });
+        user.profile = {url:path, filename: filename};
         const makeUser = await User.register(user, password);
         req.login(makeUser, err => {
             if (err) return next(err);
@@ -138,13 +130,17 @@ app.get('/createTitle',ifLogged, (req,res )=> {
 })
 app.post('/createTitle', ifLogged, async(req,res) => {
     const Title = new title(req.body)
+    
     Title.creator = req.user.username;
+    Title.creatorProfile= req.user.profile;
+
     await Title.save();
     res.redirect(`/${Title._id}/newCard`)
 })
 app.get('/:profile',ifLogged, async(req,res,next) => {
     const {profile} = req.params;
-    const userId =req.user._id;
+    const cardLikes = await card.find({creator: profile});
+    // console.log(cardLikes.likes)
     const user = await User.find({username: profile})
     const Title = await title.find({creator:profile})
     const allTitle = await title.find({});
@@ -166,37 +162,87 @@ app.post('/:id/createCard',ifLogged, upload.single('image'),async(req,res) => {
     const Title = await title.findById(id);
     const newCard = new card(req.body);
     newCard.image = {url:path, filename: filename};
+    newCard.creatorProfile = req.user.profile;
     newCard.title = Title._id;
     newCard.creator = req.user.username;
     await newCard.save();
     res.redirect(`/${Title._id}/show`)
 })
 
-app.get('/:id/show',ifLogged, async(req,res) => {
+app.get('/:id/show', async(req,res) => {
     const {id} = req.params;
     const Title = await title.findById(id);
-    const Cards = await card.find({title : id});
+    const Cards = await card.find({title : id}).sort({numOfLikes: -1})
     // if(req.user){
     //     const userId = req.user._id;
     // }
+    if(req.user){
     const userId = req.user._id;
     const Like = await like.find({title : id, creator: userId})
     res.render('show',{Title, Cards, Like})
+    }else{
+        res.render('show',{Title, Cards})
+    }
+})
+app.get('/:id/show/:cardId', ifLogged, async(req,res) => {
+    const {id,cardId} = req.params;
+    const Card = await card.findById(cardId)
+    const comment = await Comment.find({card: cardId})
+    res.render('comments',{id,cardId,Card,comment})
 })
 
+app.post('/:id/show/:cardId/comments', ifLogged, async(req,res) => {
+    const {id,cardId} = req.params;
+    const Card = await card.findById(cardId);
+    console.log(Card);
+    const newComment = new Comment(req.body);
+    // newComment.comment =  
+    newComment.card = cardId; 
+    newComment.creatorProfile= req.user.profile;
+    newComment.user = req.user.username;
+    newComment.title = id;
+    Card.numOfComment += 1;
+    await newComment.save()
+    await Card.save();
+    // res.redirect(`/${id}/show/${cardId}`)
+    res.send(req.body)
+})
+app.delete('/:id/show/:cardId/comments/:cId', async(req,res) => {
+    const {id,cardId,cId} = req.params;
+    const commentDel = await Comment.findByIdAndDelete(cId);
+    const Card = await card.findById(cardId);
+    if(Card.numOfComment > 0){
+        Card.numOfComment -= 1;
+    }
+    await Card.save()
+})
 app.get('/:id/show/:cardId/likes',ifLogged, async(req,res) => {
     const {id, cardId} = req.params;
     const Likes = new like({})
     const Like = await like.findOne({card: cardId})
     const Cards = await card.findById(cardId);
     const user = req.user.username;
+    
+    const Title = await title.findById(id)
+    const Kards = await card.find({title: id});
+    console.log(Kards);
+    let likes = 0;
+    let disLike = 0;
+    for(let like of Kards){
+        likes += like.numOfLikes
+    }
+    console.log(likes);
+
     if(!Cards.likes.includes(user)){
-    Likes.creator = user;
-    Likes.title = id;
-    Likes.card = cardId;
-    Cards.likes.push(user);
+        Likes.creator = user;
+        Likes.title = id;
+        Likes.card = cardId;
+        Cards.likes.push(user);
+        Cards.numOfLikes += 1
+        Title.totalLikes += 1 ;
     await Likes.save();
     await Cards.save();
+    await Title.save();
     res.send({
         totalLikes: Cards.likes.length
     });
@@ -205,7 +251,10 @@ app.get('/:id/show/:cardId/likes',ifLogged, async(req,res) => {
         await Like.remove();
         let idx = Cards.likes.indexOf(user);
         Cards.likes.splice(idx, 1);
+        Cards.numOfLikes -= 1;
+        Title.totalLikes -= 1;
         Cards.save();
+        Title.save();
         res.send({
             totalLikes: Cards.likes.length
         })

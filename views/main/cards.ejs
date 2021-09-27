@@ -1,4 +1,6 @@
 <%- layout('layout/boilerplate') %> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
         <div class="row">
         <div class="col-md-6 offset-md-3">
 
@@ -6,23 +8,32 @@
 
             <h1 class="text-center mb-5">Create Nominee</h1>
 
+
+            <div class='spinWrap'>
+                <div class="spin"></div>
+            </div>
             <div class="mb-3">
                 <label for="formFileSm" class="form-label"></label>
-                <input class="form-control form-control-md" name="image" id="formFileSm" type="file">
+                <input class="form-control form-control-md" name="image" placeholder="Hd pic please" id="formFileSm" type="file">
               </div>
 
             <div class="row mb-3">
                 <label for="name" class="col-sm-2 col-form-label">Name</label>
                 <div class="col-sm-10">
-                  <input type="text" name="name" class="form-control" id="name">
+                  <input type="text" name="name" placeholder="Name" class="form-control" id="name">
                 </div>
             </div>
 
             <div class="row mb-3">
                 <label for="about" class="col-sm-2 col-form-label">About</label>
                 <div class="col-sm-10">
-                   <textarea class="form-control" name="about" id="" cols="30" rows="10"></textarea>
-            <button type="submit">Create Post</button>
+                   <!-- <textarea class="form-control" name="about" id="" cols="30" rows="5"></textarea> -->
+                   <div id="test_box">
+                    <textarea cols="50" class="form-control" placeholder="only 20 letters" name="about" rows="5" id="text_text"></textarea>
+                  
+                    <div id="warning"></div>
+                  </div>
+            <button class="btn btn-success mt-2 submit" type="submit">Create Post</button>
 
                 </div>
 
@@ -30,3 +41,51 @@
 
         </form>
     </div>
+
+    <script>
+          let spinnerWrapper = document.querySelector('.spinner-wrapper');
+          const sub =document.querySelector('.submit')
+          const spinner = document.querySelector('.spin')
+          const wrap = document.querySelector('.spinWrap')
+
+sub.addEventListener('click', function () {
+    // spinnerWrapper.style.display = 'none';
+    // spinnerWrapper.parentElement.removeChild(spinnerWrapper);
+    spinner.classList = "spinner";
+    wrap.classList = "spinner-wrapper"
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$(document).ready(function() {
+  var input = $('#text_text');
+  var warning = $('#warning');
+  var char_limit = 20;
+  input.on('keyup', function() {
+    var val = $(this).val();
+    if (val.length > parseInt(char_limit)) {
+      alert("limit reached");
+      warning.css('display', 'block');
+      l = val.length
+      var input = document.getElementById("text_text");
+     input.setSelectionRange(char_limit, l)
+
+      input.focus();
+    } else {
+      warning.css('display', 'none');
+    }
+  });
+
+});
+    </script>
