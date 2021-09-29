@@ -1,40 +1,31 @@
 // this is index.ejs liked javascript below
 
-const likess = document.querySelectorAll('.title-cL')
-    for(let lik of likess){
+// const likess = document.querySelectorAll('.title-cL')
+//     for(let lik of likess){
      
-      const liked = lik.getAttribute('data-likes')
-      lik.innerText = abbrNum(liked, 1)
-    }
-
+//       const liked = lik.getAttribute('data-likes')
+//       lik.innerText = abbrNum(liked, 1)
+//     }
 
 // this is show.ejs liked javascript below
 
 
-    const n =document.querySelectorAll('.nLikes')
-
-for(let nl of n){
-    const likeValue= nl.getAttribute('data-like')
-  
-    nl.innerText = abbrNum(likeValue,1)
-    //  abbrNum(star,1)
-  }
 
 
 
-    // This is profile.esj liked javascript below
-    const like =document.querySelectorAll('.count')
-    const likeAdd =document.querySelector('.count')
+//     // This is profile.esj liked javascript below
+//     const like =document.querySelectorAll('.count')
+//     const likeAdd =document.querySelector('.count')
 
-    let counts = 0;
+//     let counts = 0;
 
-    for(let likes of like){
-      let count = likes.getAttribute('data-count')
-      // counts += count.likes.length
-       counts += parseInt(count);
-    }
-    // likes.innerText = counts;
-    likeAdd.innerText =abbrNum(counts, 1);
+//     for(let likes of like){
+//       let count = likes.getAttribute('data-count')
+//       // counts += count.likes.length
+//        counts += parseInt(count);
+//     }
+//     // likes.innerText = counts;
+//     likeAdd.innerText =abbrNum(counts, 1);
 
 
 

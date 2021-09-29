@@ -19,12 +19,12 @@
 
   <div class="row">
     <% if(!currentUser){ %> 
-    <h6>Login or Signup to reveal #1</h6>
+    <h6 class="nope text-center" >Login or Signup to reveal <span class="hash title-2">#1</span></h6>
     <% } %> 
     <% for (let card of Cards) {%> 
       <% hash++; %> 
       <% const date = card.createdAt%> 
-    <div class="col-12 col-md-3 display-show" data-user=<%currentUser%> >
+    <div class="col-12 col-md-3 display-show">
       <h2 class="text-center"> <span class="hash" data=<%= hash %>>#<%= hash %></span> <%= card.name %> </h2>
         <div class="card mt-3">
           <img src="<%= card.image.thumbnail%> " class="" width="" alt="...">
@@ -73,7 +73,11 @@
                   <span class="nLikes" data-like=<%=card.likes.length%> ><%#= card.likes.length %></span>
                     <% } %> 
                              
-                  <% } %>
+                  <% }else{ %>
+                    <i class="btn fas fa-star btn-like button unLiked noUser"></i>  
+                  <span class="nLikes" data-like=<%=card.likes.length%> ><%#= card.likes.length %></span>
+                    
+                    <% } %> 
                 
                 <%# } %> 
             </form>
@@ -98,14 +102,15 @@
 
 
 </div>
+<script src="/javascript/likes.js"></script>
 
 <script>
 
 const btns =document.querySelectorAll('.button')
 const likes =document.querySelectorAll('.count')
-const display =document.querySelectorAll('.display-show');
+const display =document.querySelectorAll('.nope');
+const noUser =document.querySelectorAll('.noUser')
 
-// const likes = document.querySelector('.nLikes');
   const hash =document.querySelectorAll('.hash')
 
   for(let has of hash){
@@ -125,6 +130,7 @@ for(let btn of btns){
 
    btn.addEventListener('click', function(e){
      e.preventDefault();
+     if(btn.classList.length < 7){
      const likeCounterSpan = this.nextElementSibling;
     //  console.log(this.attributes.value.value)
     //  if(this.textContent === "Like"){
@@ -161,19 +167,28 @@ for(let btn of btns){
      .catch(function (e) {
        console.log(e);
      })
+    } else{
+      alert('Please Log in or signup')
+    }
    })
    
   
 
   }
+ for(let dis of display){
+   console.log(display);
+ dis.nextElementSibling.classList = "display"
+ }
 
-  // for(let hide of display){
-  // const user = hide.getAttribute('data-user')
-  
-  // if(user){
-  //   display.classList = "display"
 
-  // }
-  // }
+
+ const n =document.querySelectorAll('.nLikes')
+
+for(let nl of n){
+    const likeValue= nl.getAttribute('data-like')
+    nl.innerText = abbrNum(likeValue,1)
+    //  abbrNum(star,1)
+  }
+
 </script>
 

@@ -22,6 +22,9 @@ const upload = multer({storage});
 const User = require('./models/user')
 const like = require('./models/likes');
 const Comment = require('./models/comment')
+const ExpressError = require('./utils/ExpressError')
+const catchAsync = require('./utils/catchAsync')
+
 
 
 mongoose.connect('mongodb://localhost:27017/astricx', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
@@ -57,6 +60,7 @@ const sessionConfig = {
     }
 }
 app.use(session(sessionConfig));
+app.use(flash());
 
 
 
@@ -67,33 +71,33 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-app.use((req, res, next) => {
-    console.log(req.query);
-    res.locals.currentUser = req.user;
-    // res.locals.success = req.flash('success');
-    // res.locals.error = req.flash('error');
-    next();
-})
+
 
   const ifLogged = (req,res,next) => { 
     if(!req.isAuthenticated()) {
     // req.session.returnTo = req.originalUrl;
-    // req.flash('error', 'You must be Logged In');
+    req.flash('error', 'please Login or Signup');
     return res.redirect('/login');
 }
 next()
   }
 
+  app.use((req, res, next) => {
+    console.log(req.query);
+    res.locals.currentUser = req.user;
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    next();
+})
 
-
-app.get('/', async(req, res) => {
+app.get('/', catchAsync(async(req, res) => {
     const Title = await title.find({}).sort({totalLikes: -1});
     res.render('index',{Title})
-})
+}))
 app.get('/register', (req,res) =>{
     res.render('user/register')
 })
-app.post('/register',upload.single('profile'),async (req,res) => {
+app.post('/register',upload.single('profile'),catchAsync(async (req,res) => {
     try {
         const { email, username, password } = req.body;
         console.log(req.file);
@@ -109,26 +113,28 @@ app.post('/register',upload.single('profile'),async (req,res) => {
 
     } catch (e) {
         console.log(e);
-        // req.flash('error', e.message);
+        req.flash('error', e.message);
         res.redirect('/register')
     }
-})
+}))
 app.get('/login', (req,res) => {
     res.render('user/login')
 })
-app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }),(req,res) => {
+app.post('/login', passport.authenticate('local', { failureFlash: true,failureRedirect: '/login' }),(req,res) => {
+    req.flash('success', "Welcome Back !")
     const username=req.user.username;
     console.log(username);
     res.redirect('/')
 })
 app.get('/logout', (req,res) => {
+    req.flash('error', 'Logged out')
     req.logOut();
     res.redirect('/login')
 })
 app.get('/createTitle',ifLogged, (req,res )=> {
     res.render('main/title')
 })
-app.post('/createTitle', ifLogged, async(req,res) => {
+app.post('/createTitle', ifLogged,catchAsync(async(req,res) => {
     const Title = new title(req.body)
     
     Title.creator = req.user.username;
@@ -136,8 +142,8 @@ app.post('/createTitle', ifLogged, async(req,res) => {
 
     await Title.save();
     res.redirect(`/${Title._id}/newCard`)
-})
-app.get('/:profile',ifLogged, async(req,res,next) => {
+}))
+app.get('/:profile',ifLogged,catchAsync(async(req,res,next) => {
     const {profile} = req.params;
     const cardLikes = await card.find({creator: profile});
     // console.log(cardLikes.likes)
@@ -150,13 +156,13 @@ app.get('/:profile',ifLogged, async(req,res,next) => {
     }else{
         next();
     }
-})
-app.get('/:id/newCard',ifLogged, async(req,res )=> {
+}))
+app.get('/:id/newCard',ifLogged,catchAsync(async(req,res )=> {
     const {id} = req.params;
     const fTitle = await title.findById(id);
     res.render('main/cards',{fTitle})
-})
-app.post('/:id/createCard',ifLogged, upload.single('image'),async(req,res) => {
+}))
+app.post('/:id/createCard',ifLogged, upload.single('image'),catchAsync(async(req,res) => {
     const {id} = req.params;
     const {filename, path} = req.file
     const Title = await title.findById(id);
@@ -167,9 +173,9 @@ app.post('/:id/createCard',ifLogged, upload.single('image'),async(req,res) => {
     newCard.creator = req.user.username;
     await newCard.save();
     res.redirect(`/${Title._id}/show`)
-})
+}))
 
-app.get('/:id/show', async(req,res) => {
+app.get('/:id/show',catchAsync(async(req,res) => {
     const {id} = req.params;
     const Title = await title.findById(id);
     const Cards = await card.find({title : id}).sort({numOfLikes: -1})
@@ -183,15 +189,15 @@ app.get('/:id/show', async(req,res) => {
     }else{
         res.render('show',{Title, Cards})
     }
-})
-app.get('/:id/show/:cardId', ifLogged, async(req,res) => {
+}))
+app.get('/:id/show/:cardId', ifLogged, catchAsync(async(req,res) => {
     const {id,cardId} = req.params;
     const Card = await card.findById(cardId)
     const comment = await Comment.find({card: cardId})
     res.render('comments',{id,cardId,Card,comment})
-})
+}))
 
-app.post('/:id/show/:cardId/comments', ifLogged, async(req,res) => {
+app.post('/:id/show/:cardId/comments', ifLogged, catchAsync(async(req,res) => {
     const {id,cardId} = req.params;
     const Card = await card.findById(cardId);
     console.log(Card);
@@ -204,10 +210,13 @@ app.post('/:id/show/:cardId/comments', ifLogged, async(req,res) => {
     Card.numOfComment += 1;
     await newComment.save()
     await Card.save();
+    res.send({
+        info: newComment
+    })
     // res.redirect(`/${id}/show/${cardId}`)
-    res.send(req.body)
-})
-app.delete('/:id/show/:cardId/comments/:cId', async(req,res) => {
+    // res.send(req.body)
+}))
+app.delete('/:id/show/:cardId/comments/:cId',catchAsync(async(req,res) => {
     const {id,cardId,cId} = req.params;
     const commentDel = await Comment.findByIdAndDelete(cId);
     const Card = await card.findById(cardId);
@@ -215,8 +224,8 @@ app.delete('/:id/show/:cardId/comments/:cId', async(req,res) => {
         Card.numOfComment -= 1;
     }
     await Card.save()
-})
-app.get('/:id/show/:cardId/likes',ifLogged, async(req,res) => {
+}))
+app.get('/:id/show/:cardId/likes',ifLogged, catchAsync(async(req,res) => {
     const {id, cardId} = req.params;
     const Likes = new like({})
     const Like = await like.findOne({card: cardId})
@@ -261,17 +270,23 @@ app.get('/:id/show/:cardId/likes',ifLogged, async(req,res) => {
         
     }
     // res.redirect(`/${id}/show`)
-})
+}))
 
-app.delete('/:cardId', async(req,res) =>{
+app.delete('/:cardId',catchAsync(async(req,res) =>{
     const {cardId} = req.params;
     const username = req.user.username;
     const deleteCard = await card.findByIdAndDelete(cardId) 
     res.redirect(`/${username}`)
-})
+}))
 
-app.get('*', (req,res) => {
-    res.status(404).send('Page Not Found !')
+app.all('*', (req, res, next) => {
+    next(new ExpressError('404 Page Not Found', 404))
+})
+app.use((err, req, res, next) => {
+    const { status = 500 } = err;
+    if (!err.message) err.message = 'Something Went Wrong'
+    res.status(status).render('error', { err })
+
 })
 
 app.listen(4000, (req,res) => {

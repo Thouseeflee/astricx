@@ -38,7 +38,7 @@
                         </fieldset> -->
                         
                         
-                        <span class="nLikes"><%= Card.likes.length %></span>
+                        <span class="nLikes" data-l=<%= Card.likes.length %>></span>
                         <% } else { %> 
                           <!-- <img src="https://cdn-icons-png.flaticon.com/512/786/786230.png" width="60px" class="btn" alt=""> -->
                           <!-- <a data=<%#=card._id%> data-1=<%#=Title._id%> value="0" class="btn btn-secondary button">Like</a> -->
@@ -52,7 +52,7 @@
                             <label for="first-rate1" title="Terrible">0 star</label>
                           </fieldset> -->
       
-                        <span class="nLikes"><%= Card.likes.length %></span>
+                        <span class="nLikes" data-l=<%= Card.likes.length %>></span>
                           <% } %> 
                                    
                         <% } %>
@@ -73,9 +73,10 @@
 
         <div class="col-md-4 offset-md-4">
             <form action="/<%=id%>/show/<%=cardId%>/comments" method="POST">
-
-            <textarea name="comment" class="form-control" id="" cols="60" placeholder="Leave a Comment" rows="2"></textarea>
-<p>      
+            <div class="comment-div">
+              <textarea name="comment" class="form-control" id="com" cols="60" placeholder="Leave a Comment" rows="2"></textarea>
+            </div>
+<p class="c">      
     <button  class="btn btn-success mt-2 submit" data-1=<%=id%> data-2=<%=cardId%> >Comment</button>
 </p>
 </form>
@@ -86,36 +87,130 @@
                 <div class="card-body">
                     <a href="/<%=Comment.user%> "><img src="<%=Comment.creatorProfile.profile%> " alt=""><span class="card-title c-user"><%=Comment.user%></span>
                     </a>
-                  <p class="card-text mt-2"><%=Comment.comment%></p>
-                  <form action="/<%=id%>/show/<%=cardId%>/comments/<%=Comment._id%>?_method=DELETE" method="POST">
-                      <button class="btn btn-sm btn-danger delete" type="submit" data-1=<%=id%> data-2=<%=cardId%> data-3=<%=Comment._id%> >
-                          Delete</button>
-                  </form>
+                  <p class="card-text mt-2 commen"><%=Comment.comment%></p>
+                   <div class="flex">
+                    <form action="/<%=id%>/show/<%=cardId%>/likes/<%=Comment._id%>" method="get">
+                        <span class="btn btn-sm c-like">Like</span>
+                        </form>
+        
+                          <form action="/<%=id%>/show/<%=cardId%>/comments/<%=Comment._id%>?_method=DELETE" method="POST">
+                              <span class="btn btn-sm delete" type="submit" data-1=<%=id%> data-2=<%=cardId%> data-3=<%=Comment._id%> >
+                                  Delete</span>
+                          </form>
+                   </div>
                 </div>
               </div>
               <% } %> 
         </div>
     </div>
 </div>
+<script src="/javascript/likes.js"></script>
 
 <script>
     const deleted =document.querySelectorAll('.delete');
     const display =document.querySelectorAll('.none');
-    const submit =document.querySelector('.submit')
+    const submit =document.querySelector('.submit');
+    const btns =document.querySelectorAll('.button')
+    // const reviewInp = document.querySelector('#com['name="comment"']');
+    const inp=document.querySelector("div.comment-div textarea[name='comment']");
+    const comment =document.querySelectorAll('.commen')
+    const submitP=document.querySelector('.c')
 
 
-    // submit.addEventListener('click', async function(e) {
-    //     e.preventDefault();
-    //     const id =this.getAttribute('data-1')
-    //     const cardId =this.getAttribute('data-2')
-    //     axios.post(`/${id}/show/${cardId}/comments`)
-    //        .then(function(res){
-    //           console.log(res.data);
-    //        })
-    //        .catch(function(e){
-    //            console.log(e);
-    //        })
-    // })
+    submit.addEventListener('click', async function(e) {
+      e.preventDefault();
+        const id =this.getAttribute('data-1')
+        const cardId =this.getAttribute('data-2')
+        // axios.post(`/${id}/show/${cardId}/comments`)
+        //    .then(function(res){
+        //       console.log(res.data);
+        //    })
+        //    .catch(function(e){
+        //        console.log(e);
+        //    })
+        // console.log(inp.value);
+        // console.dir(this);
+          axios({
+          method: 'post',
+          url: `/${id}/show/${cardId}/comments`,
+          data: {
+            comment: inp.value
+          }
+        })
+        .then(function (res) {
+         const profileUrl = res.data.info.creatorProfile.url
+         const User = res.data.info.user
+         const comment = res.data.info.comment
+         const titleId = res.data.info.title
+         const cardId = res.data.info.card
+         const id = res.data.info._id
+
+         const card = document.createElement('div')
+         const body = document.createElement('div');
+         body.classList = 'card-body'
+          console.log(res.data);
+          const a =document.createElement('a');
+          const profile =document.createElement('img');
+          profile.src= `${profileUrl}`;
+
+          const userSpan = document.createElement('span');
+          userSpan.classList = "card-title c-user"
+          userSpan.innerText = `${User}`
+          // a.appendChild(profile);
+          a.href = `/${User}`
+          a.appendChild(userSpan)
+          body.appendChild(a)
+          const commentP =document.createElement('p')
+          commentP.classList = "card-text mt-2 commen"
+          commentP.innerText = `${comment}`
+
+          const divFlex =document.createElement('div');
+          divFlex.classList = "flex"
+
+          const formLike =document.createElement('form')
+          formLike.action = `/${titleId}/show/${cardId}/likes/${id}`
+          formLike.method = "GET"
+
+          const btnLike =document.createElement('span')
+          btnLike.classList = "btn btn-sm c-like"
+          btnLike.innerText = "Like"
+
+          const formDelete =document.createElement('form')
+          formDelete.action = `/${titleId}/show/${cardId}/comments/${id}?_method=DELETE`
+          formDelete.method = "POST"
+
+          const btnDelete =document.createElement('span')
+          btnDelete.classList = "btn btn-sm delete"
+          btnDelete.setAttribute('type', "submit")
+          btnDelete.setAttribute('data-1', titleId)
+          btnDelete.setAttribute('data-2', cardId)
+          btnDelete.setAttribute('data-3', id)
+          btnDelete.innerText = " Delete"
+
+          formLike.appendChild(btnLike);
+          formDelete.appendChild(btnDelete);
+
+          divFlex.appendChild(formLike);
+          divFlex.appendChild(formDelete)
+           
+
+          body.appendChild(commentP)
+          body.appendChild(divFlex)
+        
+          card.classList = "card comment mt-1 none fade-in"
+          card.style = "width:19rem;"
+          card.appendChild(body);
+          submitP.after(card)
+
+        })
+        .catch(function (e) {
+          console.log(e);
+        })
+
+      
+
+    })
+    
     
  for(let deletes of deleted){
 
@@ -123,11 +218,79 @@
     deletes.addEventListener('click', function(e){
         e.preventDefault();
 
-        this.parentElement.parentElement.parentElement.classList = "display"
+        this.parentElement.parentElement.parentElement.parentElement.classList = "display"
         const id =this.getAttribute('data-1')
         const cardId =this.getAttribute('data-2')
         const cId =this.getAttribute('data-3')
         axios.delete(`/${id}/show/${cardId}/comments/${cId}`)
     })
  }
+
+ for(let btn of btns){
+  
+
+  btn.addEventListener('click', function(e){
+    e.preventDefault();
+    if(btn.classList.length < 7){
+    const likeCounterSpan = this.nextElementSibling;
+   //  console.log(this.attributes.value.value)
+   //  if(this.textContent === "Like"){
+   //    this.textContent = "Liked"
+   //    this.classList ="btn btn-success"
+   //  }else if(this.textContent ==="Liked"){
+   //    this.textContent = "Like";
+   //    this.classList = "btn btn-secondary"
+   //  }
+   // if(this.attributes.value.value === "0"){
+   //   this.attributes.value.value = "1"
+   // }
+
+
+   console.log(this.getAttribute("data-value"));
+       if(this.getAttribute("data-value") === "Liked") {
+          this.setAttribute("data-value", "Like")
+         this.classList = "btn fas fa-star btn-like unLiked"
+   }else if(this.getAttribute("data-value") ==="Like") {
+         this.setAttribute("data-value", "Liked")
+         this.classList = "btn fas fa-star btn-like liked"
+   }
+
+
+    const card_id = this.getAttribute("data")
+    const title_id = this.getAttribute("data-1")
+    axios.get(`/${title_id}/show/${card_id}/likes`)
+    .then(function(res) {
+      console.log("hurray working");
+      const data = res.data.totalLikes;
+      likeCounterSpan.innerText = abbrNum(data,1);
+
+    })
+    .catch(function (e) {
+      console.log(e);
+    })
+   } else{
+     alert('Please Log in or signup')
+   }
+  })
+  
+ 
+
+ }
+
+
+
+
+
+
+
+
+
+
+ const n =document.querySelectorAll('.nLikes')
+
+for(let nl of n){
+    const likeValue= nl.getAttribute('data-l')
+    nl.innerText = abbrNum(likeValue,1)
+    //  abbrNum(star,1)
+  }
 </script>

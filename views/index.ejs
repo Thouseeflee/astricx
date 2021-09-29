@@ -21,7 +21,7 @@
                   <h5 class="card-title">
                     <span class="hash" data=<%= hash %> >#<%= hash %></span> 
                     <%=head.title%> <i class="fas fa-star Liked"> </i>
-                    <span class="title-cL" data-likes=<%=head.totalLikes%> ><%=head.totalLikes%></span></h5>
+                    <span class="title-cL" data-likes=<%=head.totalLikes%> ><%#=head.totalLikes%></span></h5>
                   <!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
                   <%# for(let card of Cards) {%> 
                     <%# console.log(card); %> 
@@ -44,6 +44,8 @@
     </div>
         
 </div>
+<script src="/javascript/likes.js"></script>
+
 
 <script>
   const hash =document.querySelectorAll('.hash')
@@ -62,7 +64,10 @@
   // })
 
  
-  
+  const likess = document.querySelectorAll('.title-cL')
+  for(let lik of likess){
+        const liked = lik.getAttribute('data-likes')
+        lik.innerText = abbrNum(liked, 1)
+      }
             
 </script>
-
