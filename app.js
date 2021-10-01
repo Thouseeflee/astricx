@@ -24,6 +24,9 @@ const like = require('./models/likes');
 const Comment = require('./models/comment')
 const ExpressError = require('./utils/ExpressError')
 const catchAsync = require('./utils/catchAsync')
+const {isCreator, commentCreator, validateTitle, validateCard, validateComment} =require('./middleware')
+const { CloudinaryStorage, cloudinary } = require('./cloudinary')
+
 
 
 
@@ -67,13 +70,14 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
+passport.use(new LocalStrategy(User.authenticate()));
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 
 
-  const ifLogged = (req,res,next) => { 
+  const ifLogged = (req,res,next) => {
     if(!req.isAuthenticated()) {
     // req.session.returnTo = req.originalUrl;
     req.flash('error', 'please Login or Signup');
@@ -122,8 +126,9 @@ app.get('/login', (req,res) => {
 })
 app.post('/login', passport.authenticate('local', { failureFlash: true,failureRedirect: '/login' }),(req,res) => {
     req.flash('success', "Welcome Back !")
-    const username=req.user.username;
-    console.log(username);
+    // const username=req.user.username;
+    // const emailId=req.user.email;
+    // console.log(emailId);
     res.redirect('/')
 })
 app.get('/logout', (req,res) => {
@@ -134,9 +139,9 @@ app.get('/logout', (req,res) => {
 app.get('/createTitle',ifLogged, (req,res )=> {
     res.render('main/title')
 })
-app.post('/createTitle', ifLogged,catchAsync(async(req,res) => {
+app.post('/createTitle', ifLogged, validateTitle,catchAsync(async(req,res) => {
     const Title = new title(req.body)
-    
+
     Title.creator = req.user.username;
     Title.creatorProfile= req.user.profile;
 
@@ -157,6 +162,28 @@ app.get('/:profile',ifLogged,catchAsync(async(req,res,next) => {
         next();
     }
 }))
+app.post('/:profile/image',upload.single('profile'), async(req,res) =>{
+    const {profile} = req.params
+    const {filename,path} = req.file
+    const user = await User.findOne({username: profile})
+    const Title = await title.find({creator: profile})
+    const Card = await card.find({creator:profile})
+    console.log(user.profile.filename)
+    await cloudinary.uploader.destroy(user.profile.filename);
+    for(let head of Title){
+        head.creatorProfile = {url:path , filename:filename}
+        await head.save()
+    }
+    for(let c of Card){
+        c.creatorProfile = {url:path , filename:filename}
+        await c.save()
+    }
+    user.profile = {url:path , filename:filename}
+    console.log(Title);
+    await user.save()
+    console.log(user.profile);
+  res.redirect(`/${profile}`)
+})
 app.get('/:id/newCard',ifLogged,catchAsync(async(req,res )=> {
     const {id} = req.params;
     const fTitle = await title.findById(id);
@@ -197,13 +224,13 @@ app.get('/:id/show/:cardId', ifLogged, catchAsync(async(req,res) => {
     res.render('comments',{id,cardId,Card,comment})
 }))
 
-app.post('/:id/show/:cardId/comments', ifLogged, catchAsync(async(req,res) => {
+app.post('/:id/show/:cardId/comments', ifLogged,validateComment, catchAsync(async(req,res) => {
     const {id,cardId} = req.params;
     const Card = await card.findById(cardId);
     console.log(Card);
     const newComment = new Comment(req.body);
-    // newComment.comment =  
-    newComment.card = cardId; 
+    // newComment.comment =
+    newComment.card = cardId;
     newComment.creatorProfile= req.user.profile;
     newComment.user = req.user.username;
     newComment.title = id;
@@ -211,12 +238,32 @@ app.post('/:id/show/:cardId/comments', ifLogged, catchAsync(async(req,res) => {
     await newComment.save()
     await Card.save();
     res.send({
-        info: newComment
+        info: newComment,
+        pic: req.user.profile.profile
     })
     // res.redirect(`/${id}/show/${cardId}`)
     // res.send(req.body)
 }))
-app.delete('/:id/show/:cardId/comments/:cId',catchAsync(async(req,res) => {
+app.get('/cLikes/:cId', catchAsync(async(req,res) =>{
+    const {cId} = req.params;
+    const comment = await Comment.findById(cId);
+    const user = req.user.username
+    if(!comment.likes.includes(user)){
+        comment.likes.push(user)
+        await comment.save();
+        res.send({
+            totalLikes: comment.likes.length
+        })
+    }else{
+        let idx = comment.likes.indexOf(user)
+        comment.likes.splice(idx, 1)
+        comment.save()
+        res.send({
+            totalLikes: comment.likes.length
+        })
+    }
+}))
+app.delete('/:id/show/:cardId/comments/:cId',commentCreator,catchAsync(async(req,res) => {
     const {id,cardId,cId} = req.params;
     const commentDel = await Comment.findByIdAndDelete(cId);
     const Card = await card.findById(cardId);
@@ -231,7 +278,7 @@ app.get('/:id/show/:cardId/likes',ifLogged, catchAsync(async(req,res) => {
     const Like = await like.findOne({card: cardId})
     const Cards = await card.findById(cardId);
     const user = req.user.username;
-    
+
     const Title = await title.findById(id)
     const Kards = await card.find({title: id});
     console.log(Kards);
@@ -267,15 +314,17 @@ app.get('/:id/show/:cardId/likes',ifLogged, catchAsync(async(req,res) => {
         res.send({
             totalLikes: Cards.likes.length
         })
-        
+
     }
     // res.redirect(`/${id}/show`)
 }))
 
-app.delete('/:cardId',catchAsync(async(req,res) =>{
+app.delete('/:cardId',isCreator,catchAsync(async(req,res) =>{
     const {cardId} = req.params;
     const username = req.user.username;
-    const deleteCard = await card.findByIdAndDelete(cardId) 
+    const Card = await card.findById(cardId)
+    await cloudinary.uploader.destroy(Card.image.filename)
+    await card.findByIdAndDelete(cardId)
     res.redirect(`/${username}`)
 }))
 

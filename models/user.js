@@ -28,6 +28,6 @@ const userSchema =new Schema({
 
 userSchema.set('timestamps', true);
 
-userSchema.plugin(passportLocalMongoose)
+userSchema.plugin(passportLocalMongoose,)
 
 module.exports = mongoose.model('User', userSchema)

@@ -1,17 +1,16 @@
-<%- layout('./layout/boilerplate') %> 
+<% layout('./layout/boilerplate') %> 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <!-- <h1>Comments</h1> -->
 
 <div class="container-fluid">
     <div class="row">
-        
-        <div class="col-12 offset-md-4 col-md-4">
+        <% console.log(currentUser) %> 
+        <div class="col-12 offset-md-4 col-md-4 c">
             <h2 class="text-center"><%= Card.name %> </h2>
               <div class="card mt-3">
                 <img src="<%= Card.image.url%> " class="" width="" alt="...">
                   <div class="card-body">
-                    <h5 class="card-title"><%= Card.name %> </h5>
                     <div class="card-text text-muted">
                       <%#= date%>  
                     </div>
@@ -65,43 +64,55 @@
                   </div>
       
                 </div>
+
+                <form action="/<%=id%>/show/<%=cardId%>/comments" method="POST">
+                  <div class="comment-div">
+                    <textarea name="comment" maxlength="150" class="form-control" id="com" cols="20" placeholder="Leave a Comment" rows="2"></textarea>
+                    <!-- <span id="display_count">0</span><span>/35</span> -->
+      
+                  </div>
+      <p>      
+          <button  class="btn btn-success mt-2 submit" data-1=<%=id%> data-2=<%=cardId%> >Comment</button>
+      </p>
+      </form>
+
               </div>
 
 
 
 
 
-        <div class="col-md-4 offset-md-4">
-            <form action="/<%=id%>/show/<%=cardId%>/comments" method="POST">
-            <div class="comment-div">
-              <textarea name="comment" class="form-control" id="com" cols="60" placeholder="Leave a Comment" rows="2"></textarea>
-            </div>
-<p class="c">      
-    <button  class="btn btn-success mt-2 submit" data-1=<%=id%> data-2=<%=cardId%> >Comment</button>
-</p>
-</form>
-        </div>
-        <div class="col-md-12">
-            <% for(let Comment of comment) {%> 
-            <div class="card comment mt-1 none" style="width: 19rem;">
+        <!-- <div class=" ms-auto c">
+            
+        </div> -->
+        <% for(let Comment of comment) {%> 
+          <div class="col-12 col-md-5">
+            <div class="card comment mt-1 none" style="width: 100%;">
                 <div class="card-body">
-                    <a href="/<%=Comment.user%> "><img src="<%=Comment.creatorProfile.profile%> " alt=""><span class="card-title c-user"><%=Comment.user%></span>
+                    <a href="/<%=Comment.user%> "><img class="round" src="<%=Comment.creatorProfile.profile%> " alt=""><span class="card-title c-user"><%=Comment.user%></span>
                     </a>
                   <p class="card-text mt-2 commen"><%=Comment.comment%></p>
                    <div class="flex">
-                    <form action="/<%=id%>/show/<%=cardId%>/likes/<%=Comment._id%>" method="get">
-                        <span class="btn btn-sm c-like">Like</span>
+                    <form action="/cLikes/<%=Comment._id%>" method="GET">
+                      <% if(currentUser && Comment.likes.some(function(like) {return like ===currentUser.username})) {%> 
+                        <span class="btn btn-sm c-like " data=<%=Comment._id%> data-likes=<%=Comment.likes.length%>  >Liked</span>
+                        <span class="likesCounter"></span>
+                  <% }else{ %> 
+                        <span class="btn btn-sm c-like" data=<%=Comment._id%> data-likes=<%=Comment.likes.length%> >Like</span>
+                        <span class="likesCounter"></span>
+                        <% } %> 
                         </form>
-        
+                           <% if(currentUser.username === Comment.user) {%> 
                           <form action="/<%=id%>/show/<%=cardId%>/comments/<%=Comment._id%>?_method=DELETE" method="POST">
                               <span class="btn btn-sm delete" type="submit" data-1=<%=id%> data-2=<%=cardId%> data-3=<%=Comment._id%> >
                                   Delete</span>
                           </form>
+                          <% } %> 
                    </div>
                 </div>
               </div>
-              <% } %> 
-        </div>
+            </div>
+            <% } %> 
     </div>
 </div>
 <script src="/javascript/likes.js"></script>
@@ -111,10 +122,11 @@
     const display =document.querySelectorAll('.none');
     const submit =document.querySelector('.submit');
     const btns =document.querySelectorAll('.button')
-    // const reviewInp = document.querySelector('#com['name="comment"']');
     const inp=document.querySelector("div.comment-div textarea[name='comment']");
     const comment =document.querySelectorAll('.commen')
     const submitP=document.querySelector('.c')
+    const cLike=document.querySelectorAll('.c-like')
+    const likesCounter =document.querySelectorAll(".likesCounter")
 
 
     submit.addEventListener('click', async function(e) {
@@ -138,17 +150,21 @@
           }
         })
         .then(function (res) {
-         const profileUrl = res.data.info.creatorProfile.url
+         const profileUrl = res.data.pic
          const User = res.data.info.user
          const comment = res.data.info.comment
          const titleId = res.data.info.title
          const cardId = res.data.info.card
          const id = res.data.info._id
-
+         
+         const row = document.createElement('div')
+         const main = document.createElement('div')
          const card = document.createElement('div')
          const body = document.createElement('div');
+        //  row.classList = "row"
+         main.classList = 'col-12 col-md-5'
          body.classList = 'card-body'
-          console.log(res.data);
+
           const a =document.createElement('a');
           const profile =document.createElement('img');
           profile.src= `${profileUrl}`;
@@ -156,7 +172,7 @@
           const userSpan = document.createElement('span');
           userSpan.classList = "card-title c-user"
           userSpan.innerText = `${User}`
-          // a.appendChild(profile);
+          a.appendChild(profile);
           a.href = `/${User}`
           a.appendChild(userSpan)
           body.appendChild(a)
@@ -172,15 +188,20 @@
           formLike.method = "GET"
 
           const btnLike =document.createElement('span')
-          btnLike.classList = "btn btn-sm c-like"
+          btnLike.classList = "btn btn-sm newLike"
+          btnLike.setAttribute('data', `${id}`)
           btnLike.innerText = "Like"
+          
+          const likesCount =document.createElement('span')
+          likesCount.classList ="likeCount"
+          likesCount.innerText = 0
 
           const formDelete =document.createElement('form')
           formDelete.action = `/${titleId}/show/${cardId}/comments/${id}?_method=DELETE`
           formDelete.method = "POST"
 
           const btnDelete =document.createElement('span')
-          btnDelete.classList = "btn btn-sm delete"
+          btnDelete.classList = "btn btn-sm newDelete"
           btnDelete.setAttribute('type', "submit")
           btnDelete.setAttribute('data-1', titleId)
           btnDelete.setAttribute('data-2', cardId)
@@ -188,6 +209,7 @@
           btnDelete.innerText = " Delete"
 
           formLike.appendChild(btnLike);
+          formLike.appendChild(likesCount)
           formDelete.appendChild(btnDelete);
 
           divFlex.appendChild(formLike);
@@ -198,9 +220,50 @@
           body.appendChild(divFlex)
         
           card.classList = "card comment mt-1 none fade-in"
-          card.style = "width:19rem;"
+          card.style = "width:100%;"
           card.appendChild(body);
-          submitP.after(card)
+          main.appendChild(card)
+          // row.appendChild(main)
+          submitP.after(main)
+          // submitP.after(card)
+          inp.value = "";
+        const remove = document.querySelector('.newDelete');
+
+        remove.addEventListener('click', async function (e) {
+          e.preventDefault();
+          this.parentElement.parentElement.parentElement.parentElement.classList = "display"
+        const id =this.getAttribute('data-1')
+        const cardId =this.getAttribute('data-2')
+        const cId =this.getAttribute('data-3')
+        await axios.delete(`/${id}/show/${cardId}/comments/${cId}`)
+
+        })
+          
+        const newLike = document.querySelector('.newLike')
+
+
+        newLike.addEventListener('click', async function (e) {
+        // e.preventDefault();
+        let likesCounter = this.nextElementSibling;
+        console.log(this.nextElementSibling);
+        const cId = this.getAttribute('data');
+        console.log(this.textContent);
+        if(this.textContent === "Liked"){
+          this.textContent ="Like"
+        }else if(this.textContent === "Like"){
+          this.textContent = "Liked"
+        }
+
+        await axios.get(`/cLikes/${cId}`)
+        .then(function (res) {
+          const total = res.data.totalLikes;
+          likesCounter.innerText = abbrNum(total, 1)
+        })
+        .catch(function (e) {
+          console.log(e);
+        })
+      })
+
 
         })
         .catch(function (e) {
@@ -211,20 +274,33 @@
 
     })
     
-    
- for(let deletes of deleted){
+    for(let like of cLike){
+      let likes = like.nextElementSibling
+      const dataL =like.getAttribute('data-likes')
+      likes.innerText = abbrNum(dataL,1)
 
+      like.addEventListener('click', async function (e) {
+        // e.preventDefault();
+        let likesCounter = this.nextElementSibling;
+        console.log(this.nextElementSibling);
+        const cId = this.getAttribute('data');
+        console.log(this.textContent);
+        if(this.textContent === "Liked"){
+          this.textContent ="Like"
+        }else if(this.textContent === "Like"){
+          this.textContent = "Liked"
+        }
 
-    deletes.addEventListener('click', function(e){
-        e.preventDefault();
-
-        this.parentElement.parentElement.parentElement.parentElement.classList = "display"
-        const id =this.getAttribute('data-1')
-        const cardId =this.getAttribute('data-2')
-        const cId =this.getAttribute('data-3')
-        axios.delete(`/${id}/show/${cardId}/comments/${cId}`)
-    })
- }
+        await axios.get(`/cLikes/${cId}`)
+        .then(function (res) {
+          const total = res.data.totalLikes;
+          likesCounter.innerText = abbrNum(total, 1)
+        })
+        .catch(function (e) {
+          console.log(e);
+        })
+      })
+    }
 
  for(let btn of btns){
   
@@ -233,20 +309,6 @@
     e.preventDefault();
     if(btn.classList.length < 7){
     const likeCounterSpan = this.nextElementSibling;
-   //  console.log(this.attributes.value.value)
-   //  if(this.textContent === "Like"){
-   //    this.textContent = "Liked"
-   //    this.classList ="btn btn-success"
-   //  }else if(this.textContent ==="Liked"){
-   //    this.textContent = "Like";
-   //    this.classList = "btn btn-secondary"
-   //  }
-   // if(this.attributes.value.value === "0"){
-   //   this.attributes.value.value = "1"
-   // }
-
-
-   console.log(this.getAttribute("data-value"));
        if(this.getAttribute("data-value") === "Liked") {
           this.setAttribute("data-value", "Like")
          this.classList = "btn fas fa-star btn-like unLiked"
@@ -254,7 +316,6 @@
          this.setAttribute("data-value", "Liked")
          this.classList = "btn fas fa-star btn-like liked"
    }
-
 
     const card_id = this.getAttribute("data")
     const title_id = this.getAttribute("data-1")
@@ -278,14 +339,6 @@
  }
 
 
-
-
-
-
-
-
-
-
  const n =document.querySelectorAll('.nLikes')
 
 for(let nl of n){
@@ -293,4 +346,26 @@ for(let nl of n){
     nl.innerText = abbrNum(likeValue,1)
     //  abbrNum(star,1)
   }
+
+
+
+ for(let deletes of deleted){
+
+
+deletes.addEventListener('click', async function(e){
+    e.preventDefault();
+
+    const id =this.getAttribute('data-1')
+    const cardId =this.getAttribute('data-2')
+    const cId =this.getAttribute('data-3')
+    await axios.delete(`/${id}/show/${cardId}/comments/${cId}`)
+    this.parentElement.parentElement.parentElement.parentElement.classList = "display"
+})
+}
+
+
+
+
+
+
 </script>

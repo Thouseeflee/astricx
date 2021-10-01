@@ -4,7 +4,7 @@
         <div class="row">
         <div class="col-md-6 offset-md-3">
 
-        <form action="/<%=fTitle._id%>/createCard" method="POST" enctype="multipart/form-data">
+        <form action="/<%=fTitle._id%>/createCard" method="POST" class="validated-form" enctype="multipart/form-data" novalidate>
 
             <h1 class="text-center mb-5">Create Nominee</h1>
 
@@ -14,23 +14,23 @@
             </div>
             <div class="mb-3">
                 <label for="formFileSm" class="form-label"></label>
-                <input class="form-control form-control-md" name="image" placeholder="Hd pic please" id="formFileSm" type="file">
+                <input class="form-control form-control-md" name="image" placeholder="Hd pic please" id="formFileSm" type="file" required>
               </div>
 
             <div class="row mb-3">
                 <label for="name" class="col-sm-2 col-form-label">Name</label>
                 <div class="col-sm-10">
-                  <input type="text" name="name" placeholder="Name" class="form-control" id="name">
+                  <input type="text" maxlength="20" name="name" placeholder="Name" class="form-control" id="name" required>
                 </div>
             </div>
 
             <div class="row mb-3">
-                <label for="about" class="col-sm-2 col-form-label">About</label>
+                <label for="about" class="col-sm-2 col-form-label">Caption</label>
                 <div class="col-sm-10">
                    <!-- <textarea class="form-control" name="about" id="" cols="30" rows="5"></textarea> -->
                    <div id="test_box">
-                    <textarea cols="50" class="form-control" placeholder="only 20 letters" name="about" rows="5" id="text_text"></textarea>
-                  
+                    <textarea cols="50"  maxlength="36" class="form-control" placeholder="Give the best caption" name="about" rows="2" id="word_count" required></textarea>
+                    <span id="display_count">0</span><span>/35</span>
                     <div id="warning"></div>
                   </div>
             <button class="btn btn-success mt-2 submit" type="submit">Create Post</button>
@@ -47,6 +47,7 @@
           const sub =document.querySelector('.submit')
           const spinner = document.querySelector('.spin')
           const wrap = document.querySelector('.spinWrap')
+          const count = document.querySelector('#display_count')
 
 sub.addEventListener('click', function () {
     // spinnerWrapper.style.display = 'none';
@@ -55,37 +56,9 @@ sub.addEventListener('click', function () {
     wrap.classList = "spinner-wrapper"
 });
 
+const textarea = document.querySelector("textarea");
 
 
-
-
-
-
-
-
-
-
-
-
-
-$(document).ready(function() {
-  var input = $('#text_text');
-  var warning = $('#warning');
-  var char_limit = 20;
-  input.on('keyup', function() {
-    var val = $(this).val();
-    if (val.length > parseInt(char_limit)) {
-      alert("limit reached");
-      warning.css('display', 'block');
-      l = val.length
-      var input = document.getElementById("text_text");
-     input.setSelectionRange(char_limit, l)
-
-      input.focus();
-    } else {
-      warning.css('display', 'none');
-    }
-  });
-
-});
     </script>
+
+    <script src="/javascript/wordCounter.js"></script>

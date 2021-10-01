@@ -1,14 +1,23 @@
 <% layout('./layout/boilerplate') %> 
 <link rel="stylesheet" href="/stylesheets/star.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 <div class="container-fluid">
 <div class="row">
   <div class="col-6 col-md-4">
   <% for(let u of user) {%> 
     <h1 class="text-center"> <%#u.username.toUpperCase()%> </h1>
-    <img class="text-center profile-thumb" src="<%=u.profile.thumbnail%>" width="200px"alt="Profile Pic">
+    <img class="text-center profile-thumb round" src="<%=u.profile.thumbnail%>" width="200px"alt="Profile Pic">
+    <% if(currentUser.username === u.username ){ %> 
+    <form action="/<%=u.username%>/image" method="POST" class="ms-5 mt-2" enctype="multipart/form-data">
+      <label for="choose-file" class="custom-file-upload" id="choose-file-label">
+        Change
+     </label>
+     <input name="profile" type="file" id="choose-file" style="display: none;" />
+      <button type="submit" class="btn btn-sm btn-primary">upload</button>
+    </form>
+    <% } %> 
     <% } %> 
   </div>
   <div class="col-4 offset-2 col-md-4 offset-md-2 likesColumn">
@@ -34,7 +43,7 @@
               <!-- <a href="#" class="card-link">Card link</a> -->
               <!-- <a href="#" class="card-link">Another link</a> -->
                         </div>
-            <form class="mb-2 ms-2" action="/<%=Title._id%>/show/<%=card._id%>/likes" method="GET">
+            <form class="mb-2 ms-2 text-center" action="/<%=Title._id%>/show/<%=card._id%>/likes" method="GET">
                 <%# for (let lakes of Like){ %>
                     
                     <% if(currentUser) {%>  
@@ -55,6 +64,8 @@
                     
                     <%# } %> 
                 </form>
+            <a href="/<%=card.title._id%>/show/<%=card._id%>" class="btn c-button"><i class="far fa-comments c-font"></i> <%=card.numOfComment%></a>
+
                  <% if(currentUser && card.creator === currentUser.username) {%> 
                 <form class="card-footer text-end" action="/<%=card._id%>?_method=DELETE" method="POST">
                   <button type="submit" class="btn btn-danger">Delete</button>
@@ -90,6 +101,8 @@
 
         </div>
 
+        <script src="/javascript/likes.js"></script>
+
         <script>
 
             const btns =document.querySelectorAll('.button')
@@ -110,6 +123,21 @@
               // hash.addEventListener('click', function() {
               //   alert("hello")
               // })
+              // This is profile.esj liked javascript below
+              const like =document.querySelectorAll('.count')
+    const likeAdd =document.querySelector('.count')
+
+    let counts = 0;
+
+    for(let likes of like){
+      let count = likes.getAttribute('data-count')
+      // counts += count.likes.length
+       counts += parseInt(count);
+      }
+    // likes.innerText = counts;
+    likeAdd.innerText =abbrNum(counts, 1);
+
+
             
             for(let btn of btns){
               
@@ -149,7 +177,14 @@
                })
               }
 
+    
         
-            
+              $(document).ready(function () {
+	$('#choose-file').change(function () {
+		var i = $(this).prev('label').clone();
+		var file = $('#choose-file')[0].files[0].name;
+		$(this).prev('label').text(file);
+	}); 
+ });
             </script>
             
