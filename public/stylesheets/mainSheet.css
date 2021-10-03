@@ -56,7 +56,7 @@ a {
     background-color: #d5d8c5;
     border-radius: 40px;
     padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding-bottom: 2rem;
   }
   #navSelect {
     background-color: #d5d8c5 !important;
@@ -87,6 +87,12 @@ a {
     padding: 0.7rem;
     border-radius: 0.4rem;
     margin-top: 0 !important;
+  }
+  .profile-row1 {
+    background-color: #d5d8c5;
+    border-radius: 40px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
   span.ifLiked {
     color: rgb(0, 128, 0);
@@ -145,6 +151,6 @@ a {
   }
   .flex-wrap {
     background-color: #fffff9;
-    flex-wrap: wrap-reverse !important;
+    flex-wrap: wrap-reverse;
   }
 }

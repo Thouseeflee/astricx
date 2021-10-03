@@ -1,10 +1,8 @@
 <% layout('./layout/boilerplate') %> 
 
-
 <div class="container">
     <div class="row mt-2">
         <div class="col-md-4 offset-md-4">
-
             <form action="/register" method="POST" class="validated-form" enctype="multipart/form-data" novalidate>
               <h1 class="mb-2 ">Signup in One Go</h1>
               <div class="mb-1">
@@ -23,18 +21,13 @@
                 <div class="mb-1">
                   <label for="emailId" class="form-label">Email address</label>
                   <input type="email" name="email" class="form-control" id="emailId" required>
-                  <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
                 </div>
-            
                 <div class="mb-1">
                   <label for="profil" class="form-label">upload Profile Photo</label>
                   <input type="file" name="profile" class="form-control" id="profil" required>
-                </div>
-                
-            
+                </div> 
                 <button type="submit" class="btn btn-primary mt-2 mb-2">SignUp</button>
               </form>
-
         </div>
     </div>
 </div>

@@ -1,6 +1,6 @@
-if (process.env.NODE_ENV !== "production") {
-    require('dotenv').config()
-}
+// if (process.env.NODE_ENV !== "production") {
+// }
+require('dotenv').config()
 
 const express =require('express');
 const app = express();
@@ -27,11 +27,13 @@ const catchAsync = require('./utils/catchAsync')
 const {isCreator, commentCreator, validateTitle, validateCard, validateComment, titleCreator} =require('./middleware')
 const { CloudinaryStorage, cloudinary } = require('./cloudinary');
 const { findByIdAndDelete, findById } = require('./models/likes');
+const database = process.env.DATABASE_URL;
+const MongoDBStore = require('connect-mongo')
 
 
+// mongodb://localhost:27017/astricx
 
-
-mongoose.connect('mongodb://localhost:27017/astricx', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
+mongoose.connect(database, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
     .then(() => {
         console.log("Connected to Mongoose!!");
     })
@@ -50,10 +52,18 @@ app.engine('ejs', ejsMate)
 app.use(methodOverride('_method'))
 app.use(morgan('tiny'))
 
+const store = MongoDBStore.create({
+    mongoUrl: database,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret : "helloimsecretfriendcarrot"
+    }
+});
 
 const sessionConfig = {
-    name: 'session11',
-    secret:'helloimsecret',
+    store,
+    name: 'Astrics',
+    secret:'helloimsecretfriendcarrot',
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -65,19 +75,12 @@ const sessionConfig = {
 }
 app.use(session(sessionConfig));
 app.use(flash());
-
-
-
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.use(new LocalStrategy(User.authenticate()));
-
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-
-
-
   const ifLogged = (req,res,next) => {
     if(!req.isAuthenticated()) {
     req.session.returnTo = req.originalUrl;
@@ -94,7 +97,6 @@ next()
     res.locals.error = req.flash('error');
     next();
 })
-
 app.get('/', catchAsync(async(req, res) => {
     const Title = await title.find({}).sort({totalLikes: -1});
     res.render('index',{Title})
@@ -112,10 +114,9 @@ app.post('/register',upload.single('profile'),catchAsync(async (req,res) => {
         const makeUser = await User.register(user, password);
         req.login(makeUser, err => {
             if (err) return next(err);
-            // req.flash('success', 'Welcome to Yelp Camp');
+            req.flash('success', 'Welcome to Ashtrics');
             res.redirect('/');
         })
-
     } catch (e) {
         console.log(e);
         req.flash('error', e.message);
@@ -126,7 +127,6 @@ app.get('/login', (req,res) => {
     res.render('user/login')
 })
 app.post('/login', passport.authenticate('local', { failureFlash: true,failureRedirect: '/login' }),(req,res) => {
-    // req.flash('success', "Welcome Back !")
     const url = req.session.returnTo || '/'
     delete req.session.returnTo
     res.redirect(`${url}`)
@@ -148,7 +148,6 @@ app.post('/createTitle', ifLogged, validateTitle,catchAsync(async(req,res) => {
     await Title.save();
     res.redirect(`/${Title._id}/newCard`)
 }))
-
 app.get('/cLikes/:cId', catchAsync(async(req,res) =>{
     const {cId} = req.params;
     const comment = await Comment.findById(cId);
@@ -168,11 +167,8 @@ app.get('/cLikes/:cId', catchAsync(async(req,res) =>{
         })
     }
 }))
-
 app.get('/:profile',ifLogged,catchAsync(async(req,res,next) => {
     const {profile} = req.params;
-    const cardLikes = await card.find({creator: profile});
-    // console.log(cardLikes.likes)
     const user = await User.find({username: profile})
     const Title = await title.find({creator:profile})
     const allTitle = await title.find({});
@@ -227,9 +223,6 @@ app.get('/:id/show',catchAsync(async(req,res) => {
     const {id} = req.params;
     const Title = await title.findById(id);
     const Cards = await card.find({title : id}).sort({numOfLikes: -1})
-    // if(req.user){
-    //     const userId = req.user._id;
-    // }
     if(req.user){
     const userId = req.user._id;
     const Like = await like.find({title : id, creator: userId})
@@ -244,13 +237,11 @@ app.get('/:id/show/:cardId', ifLogged, catchAsync(async(req,res) => {
     const comment = await Comment.find({card: cardId})
     res.render('comments',{id,cardId,Card,comment})
 }))
-
 app.post('/:id/show/:cardId/comments', ifLogged,validateComment, catchAsync(async(req,res) => {
     const {id,cardId} = req.params;
     const Card = await card.findById(cardId);
     console.log(Card);
     const newComment = new Comment(req.body);
-    // newComment.comment =
     newComment.card = cardId;
     newComment.creatorProfile= req.user.profile;
     newComment.user = req.user.username;
@@ -262,8 +253,6 @@ app.post('/:id/show/:cardId/comments', ifLogged,validateComment, catchAsync(asyn
         info: newComment,
         pic: req.user.profile.profile
     })
-    // res.redirect(`/${id}/show/${cardId}`)
-    // res.send(req.body)
 }))
 app.delete('/:id/show/:cardId/comments/:cId',commentCreator,catchAsync(async(req,res) => {
     const {id,cardId,cId} = req.params;
@@ -280,17 +269,12 @@ app.get('/:id/show/:cardId/likes',ifLogged, catchAsync(async(req,res) => {
     const Like = await like.findOne({card: cardId})
     const Cards = await card.findById(cardId);
     const user = req.user.username;
-
     const Title = await title.findById(id)
     const Kards = await card.find({title: id});
-    console.log(Kards);
     let likes = 0;
-    let disLike = 0;
     for(let like of Kards){
         likes += like.numOfLikes
     }
-    console.log(likes);
-
     if(!Cards.likes.includes(user)){
         Likes.creator = user;
         Likes.title = id;
@@ -298,13 +282,12 @@ app.get('/:id/show/:cardId/likes',ifLogged, catchAsync(async(req,res) => {
         Cards.likes.push(user);
         Cards.numOfLikes += 1
         Title.totalLikes += 1 ;
-    await Likes.save();
-    await Cards.save();
-    await Title.save();
+        await  Cards.save();
+           Likes.save();
+          Title.save();
     res.send({
         totalLikes: Cards.likes.length
     });
-    // res.redirect(`/${id}/show`)
     } else {
         await Like.remove();
         let idx = Cards.likes.indexOf(user);
@@ -318,9 +301,7 @@ app.get('/:id/show/:cardId/likes',ifLogged, catchAsync(async(req,res) => {
         })
 
     }
-    // res.redirect(`/${id}/show`)
 }))
-
 app.delete('/:id/delete/:cardId',ifLogged,isCreator,catchAsync(async(req,res) =>{
     const {id,cardId} = req.params;
     const username = req.user.username;
@@ -342,7 +323,6 @@ app.delete('/:id/deleteTitle',titleCreator, async(req,res) => {
     await title.findByIdAndDelete(id);
     res.redirect(`/`)
 })
-
 app.all('*', (req, res, next) => {
     next(new ExpressError('404 Page Not Found', 404))
 })
@@ -350,9 +330,7 @@ app.use((err, req, res, next) => {
     const { status = 500 } = err;
     if (!err.message) err.message = 'Something Went Wrong'
     res.status(status).render('error', { err })
-
 })
-
 app.listen(5000, '192.168.1.4', (req,res) => {
     console.log("Listning on port 4000");
 })

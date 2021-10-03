@@ -9,8 +9,6 @@ const profileSchema = new Schema({
     url: String
 })
 profileSchema.virtual('thumbnail').get(function () {
-    // return this.url.replace('/upload', '/upload/w_350,h_400,c_fill')
-    // return this.url.replace('/upload', '/upload/c_fill,g_face,h_750,w_700')
     return this.url.replace('/upload', '/upload/c_fill,g_face,h_350,w_350,r_max')
 })
 profileSchema.virtual('profile').get(function () {

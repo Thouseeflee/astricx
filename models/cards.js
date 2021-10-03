@@ -9,14 +9,8 @@ const imageSchema = new Schema({
     filename: String,
     url: String
 })
-// const profileSchema = new Schema({
-//     filename: String,
-//     url: String
-// })
 
 imageSchema.virtual('thumbnail').get(function () {
-    // return this.url.replace('/upload', '/upload/w_350,h_400,c_fill')
-    // return this.url.replace('/upload', '/upload/c_fill,g_face,h_750,w_700')
     return this.url.replace('/upload', '/upload/c_fill,g_face,h_1150,w_1000')
 })
 imageSchema.virtual('profile').get(function () {
@@ -66,7 +60,6 @@ cardSchema.post('findOneAndDelete', async function (doc) {
         await Comment.deleteMany({card:{ $in: doc._id}})
         console.log(doc);
         console.log(liked);
-        // console.log(liked._id);
     }
 })
 

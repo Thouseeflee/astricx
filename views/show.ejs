@@ -1,22 +1,10 @@
 <%- layout('/layout/boilerplate') %> 
-
-<link rel="stylesheet" href="/stylesheets/star.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<!-- <div class='spinner-wrapper'>
-  <div class="spinner"></div> -->
 </div>
 <% let hash = 0; %> 
 <div class="container-fluid ">
-
-<h1 class="text-center"><%#= Title.title %></h1>
 <div class="d-grid gap-2 d-md-flex justify-content-md-center fixed-bottom">
 <a class="btn btn-success createB" href="/<%= Title._id %>/newCard ">Nominate</a>
 </div>
-<%# for(let count of Cards){ %>
-  <!-- <p class="mt-1 count" data-count=<%#=count.likes.length%> ></p>  -->
-  <%# }  %> 
-    
-
   <div class="row mb-4">
     <% if(!currentUser){ %> 
     <h6 class="nope text-center" ><a id="linkA" href="/Login">Login</a> or <a id="linkA" href="/register">Signup</a> to reveal <span class="hash title-2">#1</span></h6>
@@ -25,79 +13,38 @@
       <% hash++; %> 
       <% const date = card.createdAt%> 
     <div class="col-12 col-md-3 display-show">
-      <h1 id="titleCard" class="text-center mt-3"> <span class="hash" data=<%= hash %>>#<%= hash %></span> <%= card.name %> </h1>
+      <h1 id="titleCard" class="text-center mt-3"> <span class="hash" data=<%= hash %>>#<%= hash %></span> <%=card.name%> </h1>
         <div class="card">
-          <img src="<%= card.image.thumbnail%> " class="" width="" alt="...">
+          <img src="<%= card.image.thumbnail%>" loading="lazy" alt="<%=card.name%>">
             <div class="card-body">
-              <!-- <h5 class="card-title"> <span class="hash" data=<%= hash %> >#<%= hash %></span> <%= card.name %> </h5> -->
               <div class="card-text text-muted">
-                <%#= date%>  
               </div>
-              <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
               <p class="card-text mt-1 text-center" id="caption"><%= card.about %> </p>
-              <!-- <a href="#" class="card-link">Card link</a> -->
-              <!-- <a href="#" class="card-link">Another link</a> -->
             </div>
             <form class="card-subtitle mb-2 text-center" action="/<%=Title._id%>/show/<%=card._id%>/likes" method="GET">
-              <%# for (let lakes of Like){ %>
-              
               <% if(currentUser) {%>  
-
-                
                   <% if(card.likes.some(function (like) {return like === currentUser.username})) {%> 
-                    <!-- <img src="https://cdn-icons-png.flaticon.com/512/786/786432.png" width="60px" class="btn" alt=""> -->
-                  <!-- <a data=<%#=card._id%> data-1=<%#=Title._id%> class="btn btn-success button">Liked</a> -->
                   <i class="btn fas fa-star btn-like button liked" data=<%=card._id%> data-1=<%=Title._id%>  data-value="Liked"></i>  
-                  
-                  <!-- <fieldset class="starability-grow">
-                    <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="0"  aria-label="No rating." />
-                    <input type="radio" id="first-rate1" name="rating" value="1" />
-                    <label for="first-rate1" title="Terrible">1 star</label>
-                  </fieldset> -->
-                  
-                  
                   <span class="nLikes"data-like=<%=card.likes.length%> ><%#= card.likes.length %></span>
                   <% } else { %> 
-                    <!-- <img src="https://cdn-icons-png.flaticon.com/512/786/786230.png" width="60px" class="btn" alt=""> -->
-                    <!-- <a data=<%#=card._id%> data-1=<%#=Title._id%> value="0" class="btn btn-secondary button">Like</a> -->
-
       
                     <i class="btn fas fa-star btn-like button unLiked"   data=<%=card._id%> data-1=<%=Title._id%>  data-value="Like"></i>  
 
-                    <!-- <fieldset class="starability-grow">
-                      <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="0" checked aria-label="No rating." />
-                      <input type="radio" id="first-rate1" name="rating" value="1" />
-                      <label for="first-rate1" title="Terrible">0 star</label>
-                    </fieldset> -->
-
-                  <span class="nLikes" data-like=<%=card.likes.length%> ><%#= card.likes.length %></span>
+                  <span class="nLikes" data-like=<%=card.likes.length%> ></span>
                     <% } %> 
                              
                   <% }else{ %>
                     <i class="btn fas fa-star btn-like button unLiked noUser"></i>  
-                  <span class="nLikes" data-like=<%=card.likes.length%> ><%#= card.likes.length %></span>
-                    
+                  <span class="nLikes" data-like=<%=card.likes.length%> ></span>
                     <% } %> 
-                
-                <%# } %> 
             </form>
             <a href="/<%=Title._id%>/show/<%=card._id%>" class="btn c-button"><i class="far fa-comments c-font"></i> <%=card.numOfComment%></a>
             <div class="card-footer text-end">
-              <a href="/<%=card.creator%>"><%= card.creator%> <img src="<%= card.creatorProfile.profile%>" id="imgProfile" class="round" alt="username"></a> 
+              <a href="/<%=card.creator%>"><%= card.creator%> <img src="<%= card.creatorProfile.profile%>" loading="lazy" id="imgProfile" class="round" alt="<%=card.creator%>"></a> 
             </div>
-
           </div>
         </div>
-        <% } %> 
-        <p>
-          <%# for(let lakes of Like){ %>
-                
-            <%# if(lakes.creator === currentUser._id) {%> 
-            <!-- <button data=<%#card._id%> data-1=<%#Title._id%> class="btn btn-success btn-fill button">Liked</button> -->
-             <%# } %> 
-                       
-            <%# } %>
-        </p>
+        <% } %>
     </div>              
 
 
@@ -120,11 +67,6 @@ const noUser =document.querySelectorAll('.noUser')
       }
     }
 
-
-  // hash.addEventListener('click', function() {
-  //   alert("hello")
-  // })
-
 for(let btn of btns){
   
 
@@ -132,18 +74,6 @@ for(let btn of btns){
      e.preventDefault();
      if(btn.classList.length < 7){
      const likeCounterSpan = this.nextElementSibling;
-    //  console.log(this.attributes.value.value)
-    //  if(this.textContent === "Like"){
-    //    this.textContent = "Liked"
-    //    this.classList ="btn btn-success"
-    //  }else if(this.textContent ==="Liked"){
-    //    this.textContent = "Like";
-    //    this.classList = "btn btn-secondary"
-    //  }
-    // if(this.attributes.value.value === "0"){
-    //   this.attributes.value.value = "1"
-    // }
-
 
     console.log(this.getAttribute("data-value"));
         if(this.getAttribute("data-value") === "Liked") {
@@ -154,12 +84,10 @@ for(let btn of btns){
           this.classList = "btn fas fa-star btn-like liked"
     }
 
-
      const card_id = this.getAttribute("data")
      const title_id = this.getAttribute("data-1")
      axios.get(`/${title_id}/show/${card_id}/likes`)
      .then(function(res) {
-       console.log("hurray working");
        const data = res.data.totalLikes;
        likeCounterSpan.innerText = abbrNum(data,1);
 
@@ -171,23 +99,16 @@ for(let btn of btns){
       alert('Please Log in or signup')
     }
    })
-   
-  
-
   }
  for(let dis of display){
-   console.log(display);
  dis.nextElementSibling.classList = "display"
  }
-
-
 
  const n =document.querySelectorAll('.nLikes')
 
 for(let nl of n){
     const likeValue= nl.getAttribute('data-like')
     nl.innerText = abbrNum(likeValue,1)
-    //  abbrNum(star,1)
   }
 
 </script>

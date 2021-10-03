@@ -37,7 +37,6 @@ titleSchema.post('findOneAndDelete', async function (doc) {
         console.log(doc);
         console.log(liked);
         console.log(Card);
-        // console.log(liked._id);
     }
 })
 
