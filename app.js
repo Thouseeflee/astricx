@@ -24,8 +24,9 @@ const like = require('./models/likes');
 const Comment = require('./models/comment')
 const ExpressError = require('./utils/ExpressError')
 const catchAsync = require('./utils/catchAsync')
-const {isCreator, commentCreator, validateTitle, validateCard, validateComment} =require('./middleware')
-const { CloudinaryStorage, cloudinary } = require('./cloudinary')
+const {isCreator, commentCreator, validateTitle, validateCard, validateComment, titleCreator} =require('./middleware')
+const { CloudinaryStorage, cloudinary } = require('./cloudinary');
+const { findByIdAndDelete, findById } = require('./models/likes');
 
 
 
@@ -79,7 +80,7 @@ passport.deserializeUser(User.deserializeUser());
 
   const ifLogged = (req,res,next) => {
     if(!req.isAuthenticated()) {
-    // req.session.returnTo = req.originalUrl;
+    req.session.returnTo = req.originalUrl;
     req.flash('error', 'please Login or Signup');
     return res.redirect('/login');
 }
@@ -103,10 +104,10 @@ app.get('/register', (req,res) =>{
 })
 app.post('/register',upload.single('profile'),catchAsync(async (req,res) => {
     try {
-        const { email, username, password } = req.body;
+        const { email,name,username, password } = req.body;
         console.log(req.file);
         const {filename, path} = req.file;
-        const user = new User({ email, username });
+        const user = new User({ email, username, name});
         user.profile = {url:path, filename: filename};
         const makeUser = await User.register(user, password);
         req.login(makeUser, err => {
@@ -125,11 +126,10 @@ app.get('/login', (req,res) => {
     res.render('user/login')
 })
 app.post('/login', passport.authenticate('local', { failureFlash: true,failureRedirect: '/login' }),(req,res) => {
-    req.flash('success', "Welcome Back !")
-    // const username=req.user.username;
-    // const emailId=req.user.email;
-    // console.log(emailId);
-    res.redirect('/')
+    // req.flash('success', "Welcome Back !")
+    const url = req.session.returnTo || '/'
+    delete req.session.returnTo
+    res.redirect(`${url}`)
 })
 app.get('/logout', (req,res) => {
     req.flash('error', 'Logged out')
@@ -148,6 +148,27 @@ app.post('/createTitle', ifLogged, validateTitle,catchAsync(async(req,res) => {
     await Title.save();
     res.redirect(`/${Title._id}/newCard`)
 }))
+
+app.get('/cLikes/:cId', catchAsync(async(req,res) =>{
+    const {cId} = req.params;
+    const comment = await Comment.findById(cId);
+    const user = req.user.username
+    if(!comment.likes.includes(user)){
+        comment.likes.push(user)
+        await comment.save();
+        res.send({
+            totalLikes: comment.likes.length
+        })
+    }else{
+        let idx = comment.likes.indexOf(user)
+        comment.likes.splice(idx, 1)
+        comment.save()
+        res.send({
+            totalLikes: comment.likes.length
+        })
+    }
+}))
+
 app.get('/:profile',ifLogged,catchAsync(async(req,res,next) => {
     const {profile} = req.params;
     const cardLikes = await card.find({creator: profile});
@@ -244,25 +265,6 @@ app.post('/:id/show/:cardId/comments', ifLogged,validateComment, catchAsync(asyn
     // res.redirect(`/${id}/show/${cardId}`)
     // res.send(req.body)
 }))
-app.get('/cLikes/:cId', catchAsync(async(req,res) =>{
-    const {cId} = req.params;
-    const comment = await Comment.findById(cId);
-    const user = req.user.username
-    if(!comment.likes.includes(user)){
-        comment.likes.push(user)
-        await comment.save();
-        res.send({
-            totalLikes: comment.likes.length
-        })
-    }else{
-        let idx = comment.likes.indexOf(user)
-        comment.likes.splice(idx, 1)
-        comment.save()
-        res.send({
-            totalLikes: comment.likes.length
-        })
-    }
-}))
 app.delete('/:id/show/:cardId/comments/:cId',commentCreator,catchAsync(async(req,res) => {
     const {id,cardId,cId} = req.params;
     const commentDel = await Comment.findByIdAndDelete(cId);
@@ -319,14 +321,27 @@ app.get('/:id/show/:cardId/likes',ifLogged, catchAsync(async(req,res) => {
     // res.redirect(`/${id}/show`)
 }))
 
-app.delete('/:cardId',isCreator,catchAsync(async(req,res) =>{
-    const {cardId} = req.params;
+app.delete('/:id/delete/:cardId',ifLogged,isCreator,catchAsync(async(req,res) =>{
+    const {id,cardId} = req.params;
     const username = req.user.username;
+    const Title = await title.findById(id)
     const Card = await card.findById(cardId)
+    Title.totalLikes -= Card.numOfLikes
+    await Title.save()
     await cloudinary.uploader.destroy(Card.image.filename)
     await card.findByIdAndDelete(cardId)
     res.redirect(`/${username}`)
+
 }))
+app.delete('/:id/deleteTitle',titleCreator, async(req,res) => {
+    const {id} = req.params;
+    const Card = await card.find({title: id})
+    for(let file of Card){
+        await cloudinary.uploader.destroy(file.image.filename)
+    }  
+    await title.findByIdAndDelete(id);
+    res.redirect(`/`)
+})
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('404 Page Not Found', 404))
@@ -338,6 +353,6 @@ app.use((err, req, res, next) => {
 
 })
 
-app.listen(4000, (req,res) => {
+app.listen(5000, '192.168.1.4', (req,res) => {
     console.log("Listning on port 4000");
 })

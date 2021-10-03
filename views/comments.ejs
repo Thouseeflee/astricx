@@ -4,7 +4,7 @@
 <!-- <h1>Comments</h1> -->
 
 <div class="container-fluid">
-    <div class="row">
+    <div class="row mb-3">
         <% console.log(currentUser) %> 
         <div class="col-12 offset-md-4 col-md-4 c">
             <h2 class="text-center"><%= Card.name %> </h2>
@@ -60,7 +60,7 @@
                   </form>
                   
                   <div class="card-footer text-end">
-                    <a href="/<%=Card.creator%>"> <img src="<%= Card.creatorProfile.profile%>" alt=""></a> 
+                    <a href="/<%=Card.creator%>"> <img id="imgProfile" class="round" src="<%= Card.creatorProfile.profile%>" alt=""></a> 
                   </div>
       
                 </div>
@@ -86,29 +86,31 @@
             
         </div> -->
         <% for(let Comment of comment) {%> 
-          <div class="col-12 col-md-5">
+          <div class="col-12 col-md-5 ">
             <div class="card comment mt-1 none" style="width: 100%;">
                 <div class="card-body">
-                    <a href="/<%=Comment.user%> "><img class="round" src="<%=Comment.creatorProfile.profile%> " alt=""><span class="card-title c-user"><%=Comment.user%></span>
+                  <div id="bor" class="bor">
+                    <a href="/<%=Comment.user%> "><img class="round width" src="<%=Comment.creatorProfile.profile%> " alt=""><span class="card-title c-user"><%=Comment.user%></span>
                     </a>
-                  <p class="card-text mt-2 commen"><%=Comment.comment%></p>
-                   <div class="flex">
-                    <form action="/cLikes/<%=Comment._id%>" method="GET">
-                      <% if(currentUser && Comment.likes.some(function(like) {return like ===currentUser.username})) {%> 
-                        <span class="btn btn-sm c-like " data=<%=Comment._id%> data-likes=<%=Comment.likes.length%>  >Liked</span>
+                  </div>
+                    <p class="card-text mt-3 commen"><%=Comment.comment%></p>
+                    <div class="flex">
+                      <form action="/cLikes/<%=Comment._id%>" method="GET">
+                        <% if(currentUser && Comment.likes.some(function(like) {return like ===currentUser.username})) {%> 
+                        <span class="btn btn-sm c-like lD ifLiked " data=<%=Comment._id%> data-likes=<%=Comment.likes.length%>  >Liked</span>
                         <span class="likesCounter"></span>
                   <% }else{ %> 
-                        <span class="btn btn-sm c-like" data=<%=Comment._id%> data-likes=<%=Comment.likes.length%> >Like</span>
+                    <span class="btn btn-sm c-like lD" data=<%=Comment._id%> data-likes=<%=Comment.likes.length%> >Like</span>
                         <span class="likesCounter"></span>
                         <% } %> 
                         </form>
                            <% if(currentUser.username === Comment.user) {%> 
                           <form action="/<%=id%>/show/<%=cardId%>/comments/<%=Comment._id%>?_method=DELETE" method="POST">
-                              <span class="btn btn-sm delete" type="submit" data-1=<%=id%> data-2=<%=cardId%> data-3=<%=Comment._id%> >
-                                  Delete</span>
-                          </form>
-                          <% } %> 
-                   </div>
+                            <span class="btn btn-sm delete lD" type="submit" data-1=<%=id%> data-2=<%=cardId%> data-3=<%=Comment._id%> >
+                              Delete</span>
+                            </form>
+                            <% } %> 
+                          </div>
                 </div>
               </div>
             </div>
@@ -161,6 +163,7 @@
          const main = document.createElement('div')
          const card = document.createElement('div')
          const body = document.createElement('div');
+         const border = document.createElement('div');
         //  row.classList = "row"
          main.classList = 'col-12 col-md-5'
          body.classList = 'card-body'
@@ -168,6 +171,8 @@
           const a =document.createElement('a');
           const profile =document.createElement('img');
           profile.src= `${profileUrl}`;
+          profile.id = "imgProfile"
+          profile.classList = "round width"
 
           const userSpan = document.createElement('span');
           userSpan.classList = "card-title c-user"
@@ -175,9 +180,11 @@
           a.appendChild(profile);
           a.href = `/${User}`
           a.appendChild(userSpan)
-          body.appendChild(a)
+          border.appendChild(a)
+          border.id = "bor"
+          body.appendChild(border)
           const commentP =document.createElement('p')
-          commentP.classList = "card-text mt-2 commen"
+          commentP.classList = "card-text mt-3 commen"
           commentP.innerText = `${comment}`
 
           const divFlex =document.createElement('div');
@@ -250,8 +257,12 @@
         console.log(this.textContent);
         if(this.textContent === "Liked"){
           this.textContent ="Like"
+          this.classList = "btn btn-sm"
+          this.style = ""
         }else if(this.textContent === "Like"){
           this.textContent = "Liked"
+          this.classList = "btn btn-sm"
+          this.style = "color: green"
         }
 
         await axios.get(`/cLikes/${cId}`)
@@ -287,8 +298,10 @@
         console.log(this.textContent);
         if(this.textContent === "Liked"){
           this.textContent ="Like"
+          this.style = ""
         }else if(this.textContent === "Like"){
           this.textContent = "Liked"
+          this.style = "color: green"
         }
 
         await axios.get(`/cLikes/${cId}`)
@@ -355,11 +368,11 @@ for(let nl of n){
 deletes.addEventListener('click', async function(e){
     e.preventDefault();
 
+    this.parentElement.parentElement.parentElement.parentElement.classList = "display"
     const id =this.getAttribute('data-1')
     const cardId =this.getAttribute('data-2')
     const cId =this.getAttribute('data-3')
     await axios.delete(`/${id}/show/${cardId}/comments/${cId}`)
-    this.parentElement.parentElement.parentElement.parentElement.classList = "display"
 })
 }
 

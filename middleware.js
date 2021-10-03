@@ -1,3 +1,4 @@
+const title = require('./models/title')
 const card = require('./models/cards');
 const Comment =require('./models/comment');
 const {titleSchema, cardSchema,commentSchema} =require('./schemas.js')
@@ -5,6 +6,15 @@ const ExpressError = require('./utils/ExpressError')
 
 
 
+module.exports.titleCreator = async (req, res, next) => {
+    const { id } = req.params;
+    const Title = await title.findById(id);
+    if (Title.creator !== req.user.username) {
+        req.flash('error', 'You dont have permission to do that !');
+        return res.redirect(`/`)
+    }
+    next()
+}
 module.exports.isCreator = async (req, res, next) => {
     const { cardId } = req.params;
     const Card = await card.findById(cardId);

@@ -1,4 +1,6 @@
 <%- layout('layout/boilerplate') %> 
+<div class="container">
+
         <div class="row">
         <div class="col-md-6 offset-md-3">
 
@@ -8,7 +10,7 @@
             <div class="row mb-3">
                 <label for="title" class="col-sm-2 col-form-label">Title</label>
                 <div class="col-sm-10">
-                  <input type="text" placeholder="eg: Best boxer of all time" maxlength="32" name="title" class="form-control" id="word_count" required>
+                  <input type="text" placeholder="eg: Best football player of all time" maxlength="32" name="title" class="form-control" id="word_count" required>
                   <span id="display_count" class="ms-1">0</span><span>/31</span><br>
                   <button class="btn btn-success mt-2" type="submit">Create</button>
                 </div>
@@ -16,6 +18,7 @@
         </form>
     </div>
         </div>
+      </div>
 
         <script>
          const textarea = document.querySelector('#word_count')

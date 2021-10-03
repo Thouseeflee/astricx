@@ -6,27 +6,27 @@
   <div class="spinner"></div> -->
 </div>
 <% let hash = 0; %> 
-<div class="container-fluid">
+<div class="container-fluid ">
 
 <h1 class="text-center"><%#= Title.title %></h1>
 <div class="d-grid gap-2 d-md-flex justify-content-md-center fixed-bottom">
-<a class="btn btn-success" href="/<%= Title._id %>/newCard ">Create New Card</a>
+<a class="btn btn-success createB" href="/<%= Title._id %>/newCard ">Nominate</a>
 </div>
 <%# for(let count of Cards){ %>
   <!-- <p class="mt-1 count" data-count=<%#=count.likes.length%> ></p>  -->
   <%# }  %> 
     
 
-  <div class="row">
+  <div class="row mb-4">
     <% if(!currentUser){ %> 
-    <h6 class="nope text-center" >Login or Signup to reveal <span class="hash title-2">#1</span></h6>
+    <h6 class="nope text-center" ><a id="linkA" href="/Login">Login</a> or <a id="linkA" href="/register">Signup</a> to reveal <span class="hash title-2">#1</span></h6>
     <% } %> 
     <% for (let card of Cards) {%> 
       <% hash++; %> 
       <% const date = card.createdAt%> 
     <div class="col-12 col-md-3 display-show">
-      <h2 class="text-center"> <span class="hash" data=<%= hash %>>#<%= hash %></span> <%= card.name %> </h2>
-        <div class="card mt-3">
+      <h1 id="titleCard" class="text-center mt-3"> <span class="hash" data=<%= hash %>>#<%= hash %></span> <%= card.name %> </h1>
+        <div class="card">
           <img src="<%= card.image.thumbnail%> " class="" width="" alt="...">
             <div class="card-body">
               <!-- <h5 class="card-title"> <span class="hash" data=<%= hash %> >#<%= hash %></span> <%= card.name %> </h5> -->
@@ -34,7 +34,7 @@
                 <%#= date%>  
               </div>
               <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
-              <p class="card-text mt-1 text-center"><%= card.about %> </p>
+              <p class="card-text mt-1 text-center" id="caption"><%= card.about %> </p>
               <!-- <a href="#" class="card-link">Card link</a> -->
               <!-- <a href="#" class="card-link">Another link</a> -->
             </div>
@@ -83,7 +83,7 @@
             </form>
             <a href="/<%=Title._id%>/show/<%=card._id%>" class="btn c-button"><i class="far fa-comments c-font"></i> <%=card.numOfComment%></a>
             <div class="card-footer text-end">
-              <a href="/<%=card.creator%>"> <img src="<%= card.creatorProfile.profile%>" alt=""></a> 
+              <a href="/<%=card.creator%>"><%= card.creator%> <img src="<%= card.creatorProfile.profile%>" id="imgProfile" class="round" alt="username"></a> 
             </div>
 
           </div>

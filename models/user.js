@@ -11,10 +11,10 @@ const profileSchema = new Schema({
 profileSchema.virtual('thumbnail').get(function () {
     // return this.url.replace('/upload', '/upload/w_350,h_400,c_fill')
     // return this.url.replace('/upload', '/upload/c_fill,g_face,h_750,w_700')
-    return this.url.replace('/upload', '/upload/c_fill,g_face,h_250,w_250,r_max')
+    return this.url.replace('/upload', '/upload/c_fill,g_face,h_350,w_350,r_max')
 })
 profileSchema.virtual('profile').get(function () {
-    return this.url.replace('/upload', '/upload/c_fill,g_face,h_40,w_40,r_max')
+    return this.url.replace('/upload', '/upload/c_fill,g_face,h_90,w_90,r_max')
 })
 
 const userSchema =new Schema({
@@ -22,6 +22,16 @@ const userSchema =new Schema({
         type: String,
         required:true,
         unique: true
+    },
+    name:{
+        type: String,
+        required:true,
+        trim: true
+    },
+    username:{
+        type: String,
+        required:true,
+        trim: true
     },
     profile:profileSchema
 })

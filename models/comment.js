@@ -6,7 +6,7 @@ const imageSchema = new Schema({
     url: String
 })
 imageSchema.virtual('profile').get(function () {
-    return this.url.replace('/upload', '/upload/c_fill,g_face,h_40,w_40,r_max')
+    return this.url.replace('/upload', '/upload/c_fill,g_face,h_90,w_90,r_max')
 })
 
 const commentSchema = new Schema({

@@ -1,0 +1,150 @@
+a {
+  color: inherit !important;
+  text-decoration: none;
+}
+@media screen and (max-width: 768px) {
+  #titleh1 {
+    font-size: 1rem;
+  }
+  #caption {
+    font-family: "Yaldevi", sans-serif;
+  }
+  #imgProfile {
+    width: 30px;
+  }
+  .card-footer {
+    padding: 0.3rem 1rem;
+  }
+  #titleCard {
+    font-size: 1.5rem;
+    background-color: #d5d8c5;
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+      sans-serif;
+    font-weight: 500;
+    padding: 0.7rem;
+    border-radius: 0.4rem;
+  }
+
+  #flex {
+    display: flex;
+  }
+  #sign {
+    padding: 0.5rem;
+  }
+  #bor {
+    padding-bottom: 3px;
+    border-bottom: 1px solid #e9ecef;
+  }
+  .width {
+    width: 40px !important;
+  }
+  span.lD {
+    padding-bottom: 5px;
+    padding-right: 4px;
+    font-size: 0.9rem;
+  }
+  span.ifLiked {
+    color: rgb(0, 128, 0);
+  }
+  span.nLikes {
+    padding: 0 !important;
+  }
+  div.profile-container {
+    padding: 0.8rem;
+  }
+  .profile-row1 {
+    background-color: #d5d8c5;
+    border-radius: 40px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  #navSelect {
+    background-color: #d5d8c5 !important;
+    margin-bottom: 0.7rem;
+  }
+  .createB {
+    background-color: #d5d8c5;
+    border-color: #d5d8c5;
+    /* background-color: rgba(33, 175, 33, 0.644) !important ; */
+  }
+  .flex-wrap {
+    flex-wrap: wrap-reverse !important;
+  }
+  #linkA {
+    color: rgb(97, 97, 184) !important;
+  }
+}
+@media screen and (min-width: 768px) {
+  #titleh1 {
+    font-size: 1.1rem;
+  }
+  #titleCard {
+    font-size: 1.5rem;
+    background-color: #d5d8c5;
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+      sans-serif;
+    font-weight: 500;
+    padding: 0.7rem;
+    border-radius: 0.4rem;
+    margin-top: 0 !important;
+  }
+  span.ifLiked {
+    color: rgb(0, 128, 0);
+  }
+  .createB {
+    background-color: #d5d8c5;
+    border-color: #d5d8c5;
+    /* background-color: rgba(33, 175, 33, 0.644) !important ; */
+  }
+  .createB:hover {
+    color: white !important;
+    /* background-color: rgba(33, 175, 33, 0.644) !important ; */
+  }
+  #imgProfile {
+    width: 35px;
+  }
+  #flex {
+    display: flex;
+  }
+  #sign {
+    padding: 0.5rem;
+  }
+  .card-body {
+    padding: 0.5rem 0.7rem;
+  }
+  .width {
+    width: 40px !important;
+  }
+  #bor {
+    padding-bottom: 3px;
+    border-bottom: 1px solid #e9ecef;
+  }
+  #indexBtnD {
+    background-color: #e80c16;
+    border-color: #e80c16;
+    line-height: 1.1rem;
+  }
+  #navSelect {
+    background-color: #d5d8c5 !important;
+    margin-bottom: 0.7rem;
+  }
+  span.lD {
+    padding-bottom: 8px;
+    padding-right: 0;
+  }
+  div.profile-container {
+    background-color: #d5d8c5;
+    border-radius: 40px;
+  }
+  #linkA {
+    color: rgb(97, 97, 184) !important;
+  }
+  #linkA:hover {
+    color: rgb(97, 97, 184) !important;
+    border-bottom: 2px solid rgb(97, 97, 184);
+  }
+  .flex-wrap {
+    background-color: #fffff9;
+    flex-wrap: wrap-reverse !important;
+  }
+}
