@@ -52,18 +52,20 @@ app.engine('ejs', ejsMate)
 app.use(methodOverride('_method'))
 app.use(morgan('tiny'))
 
+const secret = process.env.SECRET || "QWROIASDFJLASVMAKDZFASEEWAQ"
+
 const store = MongoDBStore.create({
     mongoUrl: database,
     touchAfter: 24 * 60 * 60,
     crypto: {
-        secret : "helloimsecretfriendcarrot"
+        secret
     }
 });
 
 const sessionConfig = {
     store,
     name: 'Astrics',
-    secret:'helloimsecretfriendcarrot',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
