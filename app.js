@@ -28,12 +28,12 @@ const {isCreator, commentCreator, validateTitle, validateCard, validateComment, 
 const { CloudinaryStorage, cloudinary } = require('./cloudinary');
 const { findByIdAndDelete, findById } = require('./models/likes');
 // const database = process.env.DATABASE_URL;
-const database = 'mongodb://localhost:27017/ashtrics';
-const MongoDBStore = require('connect-mongo')
+const dbUrl = 'mongodb://localhost:27017/ashtrics';
+const MongoStore = require('connect-mongo')
 
 
 
-mongoose.connect(database, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
+mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
     .then(() => {
         console.log("Connected to Mongoose!!");
     })
@@ -54,8 +54,8 @@ app.use(morgan('tiny'))
 
 const secret = process.env.SECRET || "QWROIASDFJLASVMAKDZFASEEWAQ"
 
-const store = MongoDBStore.create({
-    mongoUrl: database,
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
     touchAfter: 24 * 60 * 60,
     crypto: {
         secret
@@ -64,7 +64,7 @@ const store = MongoDBStore.create({
 
 const sessionConfig = {
     store,
-    name: 'Astrics',
+    name: 'Ashtrics',
     secret,
     resave: false,
     saveUninitialized: true,
