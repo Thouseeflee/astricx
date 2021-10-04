@@ -27,8 +27,8 @@ const catchAsync = require('./utils/catchAsync')
 const {isCreator, commentCreator, validateTitle, validateCard, validateComment, titleCreator} =require('./middleware')
 const { CloudinaryStorage, cloudinary } = require('./cloudinary');
 const { findByIdAndDelete, findById } = require('./models/likes');
-// const database = process.env.DATABASE_URL;
-const database = 'mongodb://localhost:27017/astricx';
+const database = process.env.DATABASE_URL;
+// const database = 'mongodb://localhost:27017/astricx';
 const MongoDBStore = require('connect-mongo')
 
 
