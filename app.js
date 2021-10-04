@@ -28,7 +28,7 @@ const {isCreator, commentCreator, validateTitle, validateCard, validateComment, 
 const { CloudinaryStorage, cloudinary } = require('./cloudinary');
 const { findByIdAndDelete, findById } = require('./models/likes');
 // const database = process.env.DATABASE_URL;
-const database = 'mongodb://localhost:27017/astricx';
+const database = 'mongodb://localhost:27017/ashtrics';
 const MongoDBStore = require('connect-mongo')
 
 
