@@ -136,7 +136,7 @@ app.post('/login', passport.authenticate('local', { failureFlash: true,failureRe
 app.get('/logout', (req,res) => {
     req.flash('error', 'Logged out')
     req.logOut();
-    res.redirect('/login')
+    res.redirect('/login');
 })
 app.get('/createTitle',ifLogged, (req,res )=> {
     res.render('main/title')
