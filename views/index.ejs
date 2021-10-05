@@ -2,24 +2,21 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
-  <% let hash = 0; %> 
+  <%# let hash = 0; %> 
 
 <div class="container-fluid">
-    <!-- <h1 class="text-center"><small>The most Lik</small></h1> -->
     <div class="d-grid gap-2 d-md-flex justify-content-md-center fixed-bottom">
       <a class="btn btn-success createB" href="/createTitle">Create New Title</a>
     </div>
     
-    
-
     <div class="row">
         <% for(let head of Title) {%>
-          <% hash++; %> 
+          <%# hash++; %> 
         <div class="col-12 col-md-3">
             <div class="card text-center mt-1">
                 <div class="card-body">
                   <h5 class="" id="titleh1">
-                    <span class="hash"  data=<%= hash %> >#<%= hash %></span> 
+                    <!-- <span class="hash"  data=<%#= hash %> >#<%#= hash %></span>  -->
                     <%=head.title%> <i class="fas fa-star Liked"> </i>
                     <span class="title-cL" data-likes=<%=head.totalLikes%> ></span></h5>
                   <div>
@@ -46,14 +43,14 @@
 
 
 <script>
-  const hash =document.querySelectorAll('.hash')
+  // const hash =document.querySelectorAll('.hash')
   
-  for(let has of hash){
-    const hashData = has.getAttribute("data");
-    if(hashData <= 3){
-      has.classList = 'text-danger'
-    }
-  }
+  // for(let has of hash){
+  //   const hashData = has.getAttribute("data");
+  //   if(hashData <= 3){
+  //     has.classList = 'text-danger'
+  //   }
+  // }
   const likess = document.querySelectorAll('.title-cL')
   for(let lik of likess){
         const liked = lik.getAttribute('data-likes')
