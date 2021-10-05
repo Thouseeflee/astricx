@@ -151,6 +151,6 @@ a {
   }
   .flex-wrap {
     background-color: #fffff9;
-    flex-wrap: wrap-reverse;
+    flex-wrap: wrap-reverse !important;
   }
 }

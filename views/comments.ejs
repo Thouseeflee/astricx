@@ -172,9 +172,7 @@
         const newLike = document.querySelector('.newLike')
         newLike.addEventListener('click', async function (e) {
         let likesCounter = this.nextElementSibling;
-        console.log(this.nextElementSibling);
         const cId = this.getAttribute('data');
-        console.log(this.textContent);
         if(this.textContent === "Liked"){
           this.textContent ="Like"
           this.classList = "btn btn-sm"
@@ -211,9 +209,7 @@
       likes.innerText = abbrNum(dataL,1)
       like.addEventListener('click', async function (e) {
         let likesCounter = this.nextElementSibling;
-        console.log(this.nextElementSibling);
         const cId = this.getAttribute('data');
-        console.log(this.textContent);
         if(this.textContent === "Liked"){
           this.textContent ="Like"
           this.style = ""
@@ -251,7 +247,6 @@
     const title_id = this.getAttribute("data-1")
     axios.get(`/${title_id}/show/${card_id}/likes`)
     .then(function(res) {
-      console.log("hurray working");
       const data = res.data.totalLikes;
       likeCounterSpan.innerText = abbrNum(data,1);
 
@@ -260,7 +255,7 @@
       console.log(e);
     })
    } else{
-     alert('Please Log in or signup')
+     alert('Please Login or signup')
    }
   })
  }
