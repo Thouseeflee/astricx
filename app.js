@@ -99,6 +99,9 @@ next()
     res.locals.error = req.flash('error');
     next();
 })
+app.get('/sitemap.xml', function(req, res) {
+    res.sendFile('C:/Users/Thouseef Lee/astricx/views/sitemap.xml');
+    });
 app.get('/', catchAsync(async(req, res) => {
     const Title = await title.find({}).sort({totalLikes: -1});
     res.render('index',{Title})
