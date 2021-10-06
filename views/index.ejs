@@ -25,15 +25,15 @@
                 </div>
               </div>
               <div class="card-footer titleDelete">
+                <% if(currentUser && currentUser.username === head.creator) {%> 
               <form action="/<%=head._id%>/deleteTitle?_method=DELETE" method="post">
                 <button id="indexBtnD" class="btn btn-sm btn-danger" type="submit">Delete</button>
               </form>
+              <% } %> 
               <div class="ms-auto">
                 <a href="/<%= head.creator %>"><%= head.creator %> <img class="round" id="imgProfile" src="<%= head.creatorProfile.profile%>" loading="lazy" alt="<%=head.creator%>"></a>
               </div>
               </div>
-              <% if(currentUser && currentUser.username === head.creator) {%> 
-              <% } %> 
         </div>
         <% } %> 
     </div>
