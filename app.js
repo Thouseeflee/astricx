@@ -100,7 +100,7 @@ next()
     next();
 })
 app.get('/sitemap.xml', function(req, res) {
-    res.sendFile('C:/Users/Thouseef Lee/astricx/views/sitemap.xml');
+    res.sendFile('sitemap.xml', {root: '.'});
     });
 app.get('/', catchAsync(async(req, res) => {
     const Title = await title.find({}).sort({totalLikes: -1});
