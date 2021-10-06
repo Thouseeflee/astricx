@@ -1,82 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset
-      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
-
-
-<url>
-  <loc>https://www.ashtrics.com/</loc>
-  <lastmod>2021-10-06T16:19:45+00:00</lastmod>
-  <priority>1.00</priority>
-</url>
-<url>
-  <loc>https://www.ashtrics.com/login</loc>
-  <lastmod>2021-10-06T16:19:45+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.ashtrics.com/register</loc>
-  <lastmod>2021-10-06T16:19:45+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.ashtrics.com/615ca95f8f9e8a5f8a88cd34/show</loc>
-  <lastmod>2021-10-06T16:19:45+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.ashtrics.com/615cb41d8f9e8a5f8a88d2d8/show</loc>
-  <lastmod>2021-10-06T16:19:45+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.ashtrics.com/615c04928f9e8a5f8a88bbe5/show</loc>
-  <lastmod>2021-10-06T16:19:45+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.ashtrics.com/615c8f998f9e8a5f8a88c502/show</loc>
-  <lastmod>2021-10-06T16:19:45+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.ashtrics.com/615cc1468f9e8a5f8a88da65/show</loc>
-  <lastmod>2021-10-06T16:19:45+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.ashtrics.com/615cb0d58f9e8a5f8a88d126/show</loc>
-  <lastmod>2021-10-06T16:19:45+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.ashtrics.com/615c9a998f9e8a5f8a88ca45/show</loc>
-  <lastmod>2021-10-06T16:19:45+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.ashtrics.com/615b4b76b5ea145d05d26145/show</loc>
-  <lastmod>2021-10-06T16:19:45+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.ashtrics.com/615d88e71441a28be5c79870/show</loc>
-  <lastmod>2021-10-06T16:19:45+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.ashtrics.com/615db2cc1441a28be5c7999a/show</loc>
-  <lastmod>2021-10-06T16:19:45+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.ashtrics.com/Login</loc>
-  <lastmod>2021-10-06T16:19:45+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-
-
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://ashtrics.com/</loc>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://ashtrics.com/615cb0d58f9e8a5f8a88d126/show</loc>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://ashtrics.com/615b4b76b5ea145d05d26145/show</loc>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://ashtrics.com/register</loc>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://ashtrics.com/Login</loc>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://ashtrics.com/615db2cc1441a28be5c7999a/show</loc>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://ashtrics.com/615cc1468f9e8a5f8a88da65/show</loc>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://ashtrics.com/615d88e71441a28be5c79870/show</loc>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://ashtrics.com/615c04928f9e8a5f8a88bbe5/show</loc>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://ashtrics.com/615ca95f8f9e8a5f8a88cd34/show</loc>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://ashtrics.com/615cb41d8f9e8a5f8a88d2d8/show</loc>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://ashtrics.com/615c8f998f9e8a5f8a88c502/show</loc>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://ashtrics.com/615c9a998f9e8a5f8a88ca45/show</loc>
+    <changefreq>daily</changefreq>
+  </url>
 </urlset>
