@@ -2,10 +2,10 @@
 
 </div>
 <% let hash = 0; %> 
+<h1 id="seoTitle" data-seo="<%=Title.title%>"></h1>
 <div class="container-fluid ">
 <div class="d-grid gap-2 d-md-flex justify-content-md-center fixed-bottom">
 <a class="btn btn-success createB" href="/<%= Title._id %>/newCard ">Nominate</a>
-<h1 id="seoTitle" data-seo="<%=Title.title%>"></h1>
 </div>
   <div class="row mb-5">
     <% if(!currentUser){ %> 
