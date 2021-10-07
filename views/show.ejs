@@ -1,9 +1,11 @@
 <%- layout('/layout/boilerplate') %> 
+
 </div>
 <% let hash = 0; %> 
 <div class="container-fluid ">
 <div class="d-grid gap-2 d-md-flex justify-content-md-center fixed-bottom">
 <a class="btn btn-success createB" href="/<%= Title._id %>/newCard ">Nominate</a>
+<h1 id="seoTitle" data-seo="<%=Title.title%>"></h1>
 </div>
   <div class="row mb-5">
     <% if(!currentUser){ %> 
@@ -52,7 +54,9 @@
 <script src="/javascript/likes.js"></script>
 
 <script>
-
+  const seoTitle =document.querySelector('#seoTitle')
+  const chtitle =seoTitle.getAttribute('data-seo');
+   console.log(document.title = chtitle)
 const btns =document.querySelectorAll('.button')
 const likes =document.querySelectorAll('.count')
 const display =document.querySelectorAll('.nope');
