@@ -56,7 +56,9 @@
 <script>
   const seoTitle =document.querySelector('#seoTitle')
   const chtitle =seoTitle.getAttribute('data-seo');
-   console.log(document.title = chtitle)
+  document.title = chtitle
+  const seoDescription=document.querySelector('meta[name="description"]')
+  seoDescription.content = `Most starred ${chtitle}. click here to reaveal No 1 by people's choice`
 const btns =document.querySelectorAll('.button')
 const likes =document.querySelectorAll('.count')
 const display =document.querySelectorAll('.nope');
