@@ -134,6 +134,7 @@ app.get('/login', (req,res) => {
 app.post('/login', passport.authenticate('local', { failureFlash: true,failureRedirect: '/login' }),(req,res) => {
     const url = req.session.returnTo || '/'
     delete req.session.returnTo
+    console.log(req.user);
     res.redirect(`${url}`)
 })
 app.get('/logout', (req,res) => {
