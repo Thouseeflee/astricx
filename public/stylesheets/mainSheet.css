@@ -6,6 +6,10 @@ div.titleDelete {
   /* display: inline-block !important; */
   display: flex;
 }
+.navbar-brand {
+  font-weight: 700;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
 @media screen and (max-width: 768px) {
   #titleh1 {
     font-size: 1rem;
